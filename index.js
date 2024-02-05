@@ -204,13 +204,14 @@ function buildCells() {
 }
 
 function animate() {
-  requestAnimationFrame(animate);
   //console.log(numFrames);
   ctx.fillStyle = "#000";
   
   ctx.fillRect(0, 0, cvWidth, cvHeight);
   cells.forEach(cell => cell.draw());
   numFrames++;
+
+  requestAnimationFrame(animate);
 }
 
 function debounce(callback, delay) {
