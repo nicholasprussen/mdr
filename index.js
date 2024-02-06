@@ -9,7 +9,7 @@ let numHigh;
 let marginX;
 let marginY;
 let cells;
-let cellSize = 75;
+let cellSize = 125;
 let mouseX = 999999;
 let mouseY = 999999;
 let chanceToMove = 0.15;
@@ -134,9 +134,9 @@ class Cell {
     }
 
     getFontSize(distance) {
-        let fontSize = 40;
-        let upperLimit = 70;
-        let maxDist = 100;
+        let fontSize = 85;
+        let upperLimit = 115;
+        let maxDist = 175;
         let diff = upperLimit - fontSize;
         if (distance > maxDist) {
             return `${fontSize}px helvetica`;
