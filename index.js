@@ -165,8 +165,8 @@ class Cell {
         if (this.direction !== null && this.direction !== undefined) {
             this.updateNumPos();
         }
-        ctx.fillStyle = "transparent";
-        ctx.fillRect(this.x, this.y, cellSize, cellSize);
+        // ctx.fillStyle = "trans";
+        // ctx.fillRect(this.x, this.y, cellSize, cellSize);
         ctx.textAlign="center"; 
         ctx.textBaseline = "middle";
         ctx.fillStyle = "#aaf3fc"
@@ -229,3 +229,5 @@ window.addEventListener('load', init);
 window.addEventListener('resize', debounce(resize, 300))
 
 window.addEventListener('mousemove', mouseMove)
+
+window.addEventListener('touchmove', mouseMove);
