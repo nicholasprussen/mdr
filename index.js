@@ -22,8 +22,10 @@ let south = 2;
 let west = 3;
 
 let changePerFrame = 0.12;
-let changePerFrameMargin = 15;
+let changePerFrameMargin = 30;
 let framesToFullSpeed = 1000;
+
+let time;
 
 function init() {
     cvWidth = cv.width;
@@ -34,6 +36,7 @@ function init() {
     marginY = (cvHeight - (numHigh * cellSize)) / 2;
     marginX = (cvWidth - (numWidth * cellSize)) / 2;
     buildCells();
+    time = new Date();
     animate();
 }
 
@@ -206,6 +209,14 @@ function buildCells() {
 function animate() {
   //console.log(numFrames);
   ctx.fillStyle = "#000";
+
+  var date = new Date();
+  var fps = 1000 / (date - time);
+  console.log(fps);
+  time = date;
+
+
+  changePerFrame = 21 / fps;
   
   ctx.fillRect(0, 0, cvWidth, cvHeight);
   cells.forEach(cell => cell.draw());
