@@ -212,7 +212,6 @@ function animate() {
 
   var date = new Date();
   var fps = 1000 / (date - time);
-  console.log(fps);
   time = date;
 
 
