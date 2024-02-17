@@ -9,10 +9,10 @@ let numHigh;
 let marginX;
 let marginY;
 let cells;
-let cellSize = 125;
+let cellSize = 65;
 let mouseX = 999999;
 let mouseY = 999999;
-let chanceToMove = 0.15;
+let chanceToMove = 0.40;
 //let chanceToMove = 0;
 let numFrames = 0;
 
@@ -22,10 +22,12 @@ let south = 2;
 let west = 3;
 
 let changePerFrame = 0.12;
-let changePerFrameMargin = 30;
+let changePerFrameMargin = 15;
 let framesToFullSpeed = 1000;
 
 let time;
+
+let pause = false;
 
 function init() {
     cvWidth = cv.width;
@@ -37,6 +39,7 @@ function init() {
     marginX = (cvWidth - (numWidth * cellSize)) / 2;
     buildCells();
     time = new Date();
+    //ctx.filter = 'blur(1px)'
     animate();
 }
 
@@ -137,9 +140,9 @@ class Cell {
     }
 
     getFontSize(distance) {
-        let fontSize = 85;
-        let upperLimit = 115;
-        let maxDist = 175;
+        let fontSize = 32;
+        let upperLimit = 75;
+        let maxDist = 125;
         let diff = upperLimit - fontSize;
         if (distance > maxDist) {
             return `${fontSize}px helvetica`;
@@ -173,6 +176,7 @@ class Cell {
         ctx.textAlign="center"; 
         ctx.textBaseline = "middle";
         ctx.fillStyle = "#aaf3fc"
+        //ctx.filter = 'blur(2px)';
         const distance = this.calcDistance(this.numX, this.numY, mouseX, mouseY);
         ctx.font = this.getFontSize(distance);
         ctx.fillText(this.number.toString(), this.numX, this.numY);
@@ -208,14 +212,18 @@ function buildCells() {
 
 function animate() {
   //console.log(numFrames);
-  ctx.fillStyle = "#000";
+  ctx.fillStyle = "#010408";
 
   var date = new Date();
-  var fps = 1000 / (date - time);
+  var diff = date - time;
+  if (diff > 100) {
+    diff = 100;
+  }
+  var fps = 1000 / diff;
   time = date;
 
 
-  changePerFrame = 21 / fps;
+  changePerFrame = 10 / fps;
   
   ctx.fillRect(0, 0, cvWidth, cvHeight);
   cells.forEach(cell => cell.draw());
