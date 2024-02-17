@@ -9,8 +9,9 @@
 }
 
 html, body {
-    height: 100lvh;
-    width: 100lvw;
+    height: 100svh;
+    width: 100svw;
+    overflow: hidden;
     background-color: #010408;
     color: white;
     font-family: "Poppins";
