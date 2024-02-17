@@ -1,7 +1,11 @@
-cv = document.getElementById('canvas');
-ctx = cv.getContext('2d');
-cv.width = cv.getBoundingClientRect().width;
-cv.height = cv.getBoundingClientRect().height;
+const cvContainer = document.getElementById('canvas-container');
+
+let cv;
+let ctx;
+// cv = document.getElementById('canvas');
+// ctx = cv.getContext('2d');
+// cv.width = cv.getBoundingClientRect().width;
+// cv.height = cv.getBoundingClientRect().height;
 let cvWidth;
 let cvHeight;
 let numWidth;
@@ -33,6 +37,12 @@ let offsetX = 0;
 let offsetY = 0;
 
 function init() {
+    cv = document.createElement('canvas');
+    ctx = cv.getContext('2d');
+    const cvContainerBoundingRect = cvContainer.getBoundingClientRect();
+    cv.height = cvContainerBoundingRect.height;
+    cv.width = cvContainerBoundingRect.width;
+    cvContainer.appendChild(cv);
     cvWidth = cv.width;
     cvHeight = cv.height;
     cells = [];
@@ -50,9 +60,12 @@ function init() {
 }
 
 function resize() {
-    const boundingRect = cv.getBoundingClientRect();
-    cv.width = boundingRect.width;
+    const boundingRect = cv.parentNode.getBoundingClientRect();
+    // const bodBoundingRect = document.getElementById('body').getBoundingClientRect();
+    // cv.width = bodBoundingRect.width;
+    // cv.height = boundingRect.height;
     cv.height = boundingRect.height;
+    cv.width = boundingRect.width;
     offsetY = boundingRect.top;
     offsetX = boundingRect.left;
     cvWidth = cv.width;
@@ -253,7 +266,7 @@ function debounce(callback, delay) {
 
 window.addEventListener('load', init);
 
-window.addEventListener('resize', debounce(resize, 300))
+window.addEventListener('resize', resize)
 
 window.addEventListener('mousemove', mouseMove)
 
