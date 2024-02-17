@@ -29,6 +29,9 @@ let time;
 
 let pause = false;
 
+let offsetX = 0;
+let offsetY = 0;
+
 function init() {
     cvWidth = cv.width;
     cvHeight = cv.height;
@@ -37,6 +40,9 @@ function init() {
     numHigh = Math.floor(cvHeight / cellSize);
     marginY = (cvHeight - (numHigh * cellSize)) / 2;
     marginX = (cvWidth - (numWidth * cellSize)) / 2;
+    const boundingRect = cv.getBoundingClientRect();
+    offsetY = boundingRect.top;
+    offsetX = boundingRect.left;
     buildCells();
     time = new Date();
     //ctx.filter = 'blur(1px)'
@@ -44,8 +50,11 @@ function init() {
 }
 
 function resize() {
-    cv.width = cv.getBoundingClientRect().width;
-    cv.height = cv.getBoundingClientRect().height;
+    const boundingRect = cv.getBoundingClientRect();
+    cv.width = boundingRect.width;
+    cv.height = boundingRect.height;
+    offsetY = boundingRect.top;
+    offsetX = boundingRect.left;
     cvWidth = cv.width;
     cvHeight = cv.height;
     numWidth =  Math.floor(cvWidth / cellSize);
@@ -184,8 +193,8 @@ class Cell {
 }
 
 function mouseMove(event) {
-    mouseX = event.clientX;
-    mouseY = event.clientY;
+    mouseX = event.clientX - offsetX;
+    mouseY = event.clientY - offsetY;
 }
 
 function buildCells() {
