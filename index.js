@@ -165,6 +165,9 @@ class Cell {
         let fontSize = 32;
         let upperLimit = 75;
         let maxDist = 125;
+        if (distance === NaN) {
+            return `${fontSize}px helvetica`;
+        }
         let diff = upperLimit - fontSize;
         if (distance > maxDist) {
             return `${fontSize}px helvetica`;
