@@ -1,0 +1,10 @@
+export const FRAMES_TO_FULL_SPEED = 200;
+export const MAX_WARM_UP_PERIOD = 500;
+export const TRIGGER_DIRECTION_CHANGE_MARGIN = 15;
+export const CELL_SIZE = 65;
+export let CHANGE_PER_FRAME = 0.12;
+export const MOUSE_MAX_DISTANCE = 125;
+export const MAX_FONT_SIZE = 75;
+export const DEFAULT_FONT_SIZE = 32;
+export const CHANCE_TO_MOVE = 0.40;
+export const CLICK_DISTANCE = CELL_SIZE * 0.5;

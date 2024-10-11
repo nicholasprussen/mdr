@@ -1,0 +1,19 @@
+{
+  "name": "mdr",
+  "version": "0.1.0",
+  "description": "",
+  "main": "dist/index.js",
+  "author": {
+    "url": "www.nicholasprussen.com",
+    "name": "Nicholas Prussen"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc && npm run build:cp-public",
+    "build:cp-public": "cp -r ./public/** ./dist",
+    "type": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}
