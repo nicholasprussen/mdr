@@ -24,7 +24,7 @@ html, body {
     color: white;
     font-family: "Poppins";
     color: var(--accent);
-    cursor: url("assets/img/cursor.svg"), auto;
+    cursor: url("../img/cursor.svg"), auto;
 }
 
 #canvas {
@@ -57,7 +57,7 @@ html, body {
     z-index: 999;
     /* background-color: rgba(0, 0, 0, 0.1); */
     pointer-events: none;
-    background: url("assets/img/background-tile.png");
+    background: url("../img/background-tile.png");
 }
 
 .hex-footer {
