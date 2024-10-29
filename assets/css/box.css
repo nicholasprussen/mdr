@@ -1,0 +1,49 @@
+.box {
+    /* width: 15%;
+    max-width: 200px; */
+    width: 100%;
+}
+
+.box-bottom, .box-top {
+    border: var(--accent) 5px solid;
+    /* padding: 0.25rem; */
+} 
+
+.box-top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+
+.box-top {
+    font-weight: bolder;
+    font-size: 1.25em;
+}
+
+.box-bottom {
+    position: relative;
+}
+
+.box-progress-bar {
+    height: 30px;
+    background-color: var(--accent);
+    animation: loading 10s linear infinite;
+}
+
+.box-percentage {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding-left: 0.5rem;
+    mix-blend-mode: difference;
+}
+
+.box-percentage-text {
+    font-size: x-large;
+}

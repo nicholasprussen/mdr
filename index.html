@@ -1,0 +1,140 @@
+<html>
+    <head>
+        <script>var exports = {};</script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/assets/css/index.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+      <script type="module" crossorigin src="/assets/index-IoDbRY38.js"></script>
+    </head>
+
+
+    <template id="box">
+        <link rel="stylesheet" type="text/css" href="/assets/css/box.css">
+        <div class="box">
+            <div class="box-top">
+                <slot name="box-num"></slot>
+            </div>
+            <div class="box-bottom" style="position: relative">
+                <div class="box-progress-bar" style="width: 0%">
+                    
+                </div>
+                <div class="box-percentage">
+                    <span class="box-percentage-text percent-num">0</span>
+                    <span class="box-percentage-text">%</span>
+                </div>
+            </div>
+        </div>
+    </template>
+
+
+    <script>
+        const template = document.getElementById('box');
+        console.log(template)
+        class BoxElement extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: "open" });
+                this.shadowRoot.appendChild(template.content.cloneNode(true));
+            }
+        }
+        customElements.define('boxy-box', BoxElement);
+    </script>
+
+
+
+    <body class="body" id="body">
+        <div class="app">
+            <div class="header">
+                <div class="header-container">
+                    <div class="header-inner">
+                        <h1>Dranesville</h1>
+                        <div class="header-end">
+                            19% Complete
+                        </div>
+                    </div>
+                </div>
+                <div class="box-extra-top-border"></div>
+            </div>
+            <div id="canvas-container" class="canvas-container">
+                <!-- <canvas id="canvas"></canvas> -->
+            </div>
+            <div class="boxes">
+                <div class="box-extra-top-border"></div>
+                <div class="box-container-container">
+                    <div class="box-container">
+                        <boxy-box id="box-1">
+                            <span class="box-num" slot="box-num">01</span>
+                        </boxy-box>
+                        <boxy-box id="box-2">
+                            <span slot="box-num">02</span>
+                        </boxy-box>
+                        <boxy-box id="box-3">
+                            <span slot="box-num">03</span>
+                        </boxy-box>
+                        <boxy-box id="box-4">
+                            <span slot="box-num">04</span>
+                        </boxy-box>
+                        <boxy-box id="box-5">
+                            <span slot="box-num">05</span>
+                        </boxy-box>
+                        <!-- <div class="box box-1">
+                            <div class="box-top">
+                                <span>01</span>
+                            </div>
+                            <div class="box-bottom">
+                                5%
+                            </div>
+                        </div>
+                        <div class="box box-2">
+                            <div class="box-top">
+                                <span>02</span>
+                            </div>
+                            <div class="box-bottom">
+                                5%
+                            </div>
+                        </div>
+                        <div class="box box-3">
+                            <div class="box-top">
+                                <span>03</span>
+                            </div>
+                            <div class="box-bottom">
+                                5%
+                            </div>
+                        </div>
+                        <div class="box box-4">
+                            <div class="box-top">
+                                <span>04</span>
+                            </div>
+                            <div class="box-bottom" style="position: relative">
+                                <div class="box-progress-bar" style="width: 15%;">
+                                    
+                                </div>
+                                <div class="box-percentage">
+                                    <span class="box-percentage-text">5%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box box-5">
+                            <div class="box-top">
+                                <span>05</span>
+                            </div>
+                            <div class="box-bottom">
+                                5%
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+            <div class="hex-footer">
+                <div class="hex-container">
+                    <span>0x15DB4A</span>
+                    <span>:</span>
+                    <span>0x0AKAFC</span> 
+                </div>
+            </div>
+        </div>
+        <div class="overlay"></div>
+    </body>
+</html>
