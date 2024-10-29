@@ -1,5 +1,5 @@
 export const FRAMES_TO_FULL_SPEED = 200;
-export const MAX_WARM_UP_PERIOD = 500;
+export const MAX_WARM_UP_PERIOD = 1000;
 export const TRIGGER_DIRECTION_CHANGE_MARGIN = 15;
 export const CELL_SIZE = 65;
 export let CHANGE_PER_FRAME = 0.12;

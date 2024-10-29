@@ -2,6 +2,14 @@
     --accent: #aaf3fc;
 }
 
+@keyframes loading {
+    0% {
+        width: 0;
+    } 100% {
+        width: 100%;
+    }
+}
+
 * {
     box-sizing: border-box;
     padding: 0;
@@ -90,26 +98,9 @@ html, body {
     margin-right: auto;
 }
 
-.box {
+boxy-box {
     width: 15%;
     max-width: 200px;
-}
-
-.box-bottom, .box-top {
-    border: var(--accent) 5px solid;
-    padding: 0.25rem;
-} 
-
-.box-top {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 0.25rem;
-}
-
-.box-top span {
-    font-weight: bolder;
-    font-size: 1.25em;
 }
 
 .header-container {

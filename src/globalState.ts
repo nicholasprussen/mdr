@@ -43,7 +43,7 @@ export class GlobalState {
         this.createGrid();
         this.lastDrawDate = new Date();
 
-        window.addEventListener('resize', this.resize);
+        window.addEventListener('resize', this.resize.bind(this));
     }
 
     createCanvas(): void {
@@ -54,9 +54,11 @@ export class GlobalState {
         
         this.canvasElement = document.createElement('canvas');
 
-        this.canvasElement.addEventListener('mousemove', this.mouseMove);
-        this.canvasElement.addEventListener('mouseup', this.mouseUp);
-        this.canvasElement.addEventListener('mousedown', this.mouseDown);
+        this.canvasElement.addEventListener('mousemove', this.mouseMove.bind(this));
+        this.canvasElement.addEventListener('mouseup', this.mouseUp.bind(this));
+        this.canvasElement.addEventListener('mousedown', this.mouseDown.bind(this));
+
+        this.setupBoxListeners();
 
         this.canvasContext = this.canvasElement.getContext('2d') as CanvasRenderingContext2D;
 
@@ -74,8 +76,8 @@ export class GlobalState {
         this.gridWidth = Math.floor(this.canvasWidth / CELL_SIZE);
         this.gridHeight = Math.floor(this.canvasHeight / CELL_SIZE);
 
-        this.marginX = (this.canvasWidth - (this.gridHeight * CELL_SIZE)) / 2;
-        this.marginY = (this.canvasHeight - (this.gridWidth * CELL_SIZE)) / 2;
+        this.marginX = (this.canvasWidth - (this.gridWidth * CELL_SIZE)) / 2;
+        this.marginY = (this.canvasHeight - (this.gridHeight * CELL_SIZE)) / 2;
 
         const canvasBoundingRect = this.canvasElement?.getBoundingClientRect();
         this.offsetX = canvasBoundingRect?.left ?? 0;
@@ -101,9 +103,9 @@ export class GlobalState {
                         new Cell(
                             xLoc,
                             yLoc,
-                            '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
-                        () => this.CHANGE_PER_FRAME,
-                        () => this.paused)
+                            () => this.CHANGE_PER_FRAME,
+                            () => this.paused,
+                            x === 0 && y===0)
                     );
                 }
                 index++;
@@ -116,10 +118,11 @@ export class GlobalState {
     }
 
     setupBoxListeners(): void {
-        const boxElements = document.getElementsByClassName('box') as HTMLCollectionOf<HTMLDivElement>;
+        const boxElements = document.getElementsByTagName('boxy-box') as unknown as any[];
         for(let element of boxElements) {
+            console.log(element);
             this.containerElements.push(element);
-            element.addEventListener('click', (event: MouseEvent) => this.containerBoxClickListener(event, element));
+            element.addEventListener('click', (event: MouseEvent) => this.containerBoxClickListener.bind(this)(event, element));
         }
     }
 
@@ -139,6 +142,17 @@ export class GlobalState {
                 containerY: elementBoundingRect.y + (elementBoundingRect.height / 2)
             }
         })
+
+        console.log(element);
+        const shadowRoot = element.shadowRoot;
+        if (shadowRoot == null) {
+            return;
+        }
+
+        //TODO We need a global state for the 5 boxes. Parsing the values from the HTML is a pain in the ass
+        // const textEl = shadowRoot.querySelector(".box-percentage-text");
+        // const previousPercent
+        // console.log(el)
     }
 
     mouseMove(event: MouseEvent) {
@@ -210,7 +224,7 @@ export class GlobalState {
         this.numFramesSinceReset++;
         this.totalFramesSinceAppStart++;
       
-        requestAnimationFrame(this.animate);
+        requestAnimationFrame(this.animate.bind(this));
     }
 
     resize() {

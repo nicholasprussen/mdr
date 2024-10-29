@@ -2,18 +2,22 @@
   "name": "mdr",
   "version": "0.1.0",
   "description": "",
-  "main": "dist/index.js",
   "author": {
-    "url": "www.nicholasprussen.com",
+    "url": "https://www.nicholasprussen.com",
     "name": "Nicholas Prussen"
   },
   "license": "MIT",
+  "type": "module",
   "scripts": {
-    "build": "tsc && npm run build:cp-public",
-    "build:cp-public": "cp -r ./public/** ./dist",
-    "type": "tsc --noEmit"
+    "dev": "vite",
+    "build": "vite build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
+  "homepage": "https://nicholasprussen.github.io/mdr/",
   "devDependencies": {
-    "typescript": "^5.6.3"
+    "gh-pages": "^6.2.0",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.8"
   }
 }

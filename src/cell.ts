@@ -19,9 +19,8 @@ export class Cell {
     private yPosInGrid: number | undefined;
     private xNumSubPosition: number = 0;
     private yNumSubPosition: number = 0;
-    private hexColor: string = "000000";
-    public direction: Direction | undefined = this.getInitialDirection();
-    public previousDirection: Direction | undefined = this.direction;
+    public direction: Direction | undefined;
+    public previousDirection: Direction | undefined;
     private timeToWaitInMiliseconds: number = 0;
 
     public selected: boolean = false;
@@ -47,16 +46,17 @@ export class Cell {
 
     paused: () => boolean = () => false;
 
+    log: boolean = false;
+
     constructor(
         xPosInGrid: number,
         yPosInGrid: number,
-        hexColor: string,
         changePerFrameGetter: () => number,
-        pauseGetter: () => boolean
+        pauseGetter: () => boolean,
+        log: boolean
     ) {
         this.xPosInGrid = xPosInGrid;
         this.yPosInGrid = yPosInGrid;
-        this.hexColor = hexColor;
 
         this.cellCenterX = this.xPosInGrid + (CELL_SIZE / 2);
         this.cellCenterY = this.yPosInGrid + (CELL_SIZE / 2);
@@ -65,6 +65,16 @@ export class Cell {
         this.paused = pauseGetter;
 
         this.NumBoundingBox = this.generateBoundingBox();
+
+        this.centerNumY();
+        this.centerNumX();
+
+        this.direction = this.getInitialDirection();
+        this.previousDirection = this.direction;
+        this.log = log;
+        if (this.log) {
+            console.log(this)
+        }
     }
 
     public resetNum(newX: number, newY: number): void {
@@ -76,19 +86,19 @@ export class Cell {
 
     private generateBoundingBox(): NumBoundingBox {
         return {
-            maxY: (this.yPosInGrid ?? 0) + TRIGGER_DIRECTION_CHANGE_MARGIN,
-            minY: (this.yPosInGrid ?? 0) + (CELL_SIZE - TRIGGER_DIRECTION_CHANGE_MARGIN),
-            maxX: (this.xPosInGrid ?? 0) + TRIGGER_DIRECTION_CHANGE_MARGIN,
-            minX: (this.xPosInGrid ?? 0) + (CELL_SIZE - TRIGGER_DIRECTION_CHANGE_MARGIN)
+            minY: (this.yPosInGrid ?? 0) + TRIGGER_DIRECTION_CHANGE_MARGIN,
+            maxY: (this.yPosInGrid ?? 0) + (CELL_SIZE - TRIGGER_DIRECTION_CHANGE_MARGIN),
+            minX: (this.xPosInGrid ?? 0) + TRIGGER_DIRECTION_CHANGE_MARGIN,
+            maxX: (this.xPosInGrid ?? 0) + (CELL_SIZE - TRIGGER_DIRECTION_CHANGE_MARGIN)
         }
     }
 
     get pastNorthBoundingBox(): boolean {
-        return this.yNumSubPosition <= this.NumBoundingBox.maxY;
+        return this.yNumSubPosition <= this.NumBoundingBox.minY;
     }
 
     get pastSouthBoundingBox(): boolean {
-        return this.yNumSubPosition >= this.NumBoundingBox.minY;
+        return this.yNumSubPosition >= this.NumBoundingBox.maxY;
     }
 
     get pastWestBoundingBox(): boolean {
@@ -108,6 +118,9 @@ export class Cell {
         if (chance < CHANCE_TO_MOVE) {
             const direction = Math.floor(Math.random() * 4);
             this.timeToWaitInMiliseconds = Math.floor(Math.random() * MAX_WARM_UP_PERIOD);
+            if (this.log) {
+                console.log(this.timeToWaitInMiliseconds)
+            }
             return direction;
         }
         return undefined;
