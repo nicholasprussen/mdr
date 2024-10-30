@@ -28,7 +28,7 @@
 .box-progress-bar {
     height: 30px;
     background-color: var(--accent);
-    animation: loading 10s linear infinite;
+    transition: width 0.2s ease-in-out;
 }
 
 .box-percentage {
@@ -46,4 +46,5 @@
 
 .box-percentage-text {
     font-size: x-large;
+    user-select: none;
 }
