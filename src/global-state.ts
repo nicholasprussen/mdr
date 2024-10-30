@@ -1,6 +1,15 @@
 import { Cell } from "./cell";
 import { CELL_SIZE, CLICK_DISTANCE } from "./constants";
 import { Direction } from "./direction";
+import { ShippingBox } from "./shipping-box";
+
+export type ShippingBoxMap = {
+    '01': ShippingBox,
+    '02': ShippingBox,
+    '03': ShippingBox,
+    '04': ShippingBox,
+    '05': ShippingBox
+}
 
 export class GlobalState {
     canvasContainer!: HTMLDivElement;
@@ -38,9 +47,15 @@ export class GlobalState {
     mouseY: number = 9999999999;
     mouseClickPoints: number[][] = [];
 
+    ShippingBoxMap: ShippingBoxMap;
+
     constructor() {
         this.createCanvas();
         this.createGrid();
+
+        this.ShippingBoxMap = this.createShippingBoxes();
+        console.log(this.ShippingBoxMap);
+
         this.lastDrawDate = new Date();
 
         window.addEventListener('resize', this.resize.bind(this));
@@ -58,7 +73,7 @@ export class GlobalState {
         this.canvasElement.addEventListener('mouseup', this.mouseUp.bind(this));
         this.canvasElement.addEventListener('mousedown', this.mouseDown.bind(this));
 
-        this.setupBoxListeners();
+        // this.setupBoxListeners();
 
         this.canvasContext = this.canvasElement.getContext('2d') as CanvasRenderingContext2D;
 
@@ -84,6 +99,26 @@ export class GlobalState {
         this.offsetY = canvasBoundingRect?.top ?? 0;
 
         this.buildCells();
+    }
+
+    createShippingBoxes(): ShippingBoxMap {
+        const shippingBoxes = document.getElementsByTagName('boxy-box') as unknown as any[];
+        const shippingBoxMap: {[key: string]: ShippingBox} = {};
+        let index = 1;
+        for(let element of shippingBoxes) {
+            const newShippingBox = new ShippingBox(
+                element,
+                this.shippingBoxCallback.bind(this)
+            );
+            shippingBoxMap[`0${index}`] = newShippingBox;
+            index++;
+        }
+        return shippingBoxMap as ShippingBoxMap;
+    }
+
+    shippingBoxCallback = (event: MouseEvent, shippingBox: ShippingBox) => {
+        this.containerBoxClickListener(event, shippingBox);
+        console.log(`Shipping Box ${shippingBox.element}`);
     }
 
     buildCells(rebuild: boolean = false) {
@@ -126,14 +161,14 @@ export class GlobalState {
         }
     }
 
-    containerBoxClickListener(event: MouseEvent, element: HTMLDivElement): void {
+    containerBoxClickListener(event: MouseEvent, shippingBox: ShippingBox): void {
         this.paused = true;
         const clickedCells = this.Grid.filter(cell => cell.selected);
         if (clickedCells.length < 1) {
             this.paused = false;
             return;
         }
-        const elementBoundingRect = element.getBoundingClientRect();
+        const elementBoundingRect = shippingBox.element.getBoundingClientRect();
         clickedCells.forEach(cell => {
             cell.previousDirection = cell.direction;
             cell.direction = 5;
@@ -143,16 +178,22 @@ export class GlobalState {
             }
         })
 
-        console.log(element);
-        const shadowRoot = element.shadowRoot;
-        if (shadowRoot == null) {
+        setTimeout(() => {
+            shippingBox.addToTotalPercent(Math.round(Math.random() * 12));
+            this.updateTotalPercentage();
+        }, 1000)
+    }
+
+    updateTotalPercentage(): void {
+        const total = Math.round(Object.values(this.ShippingBoxMap).reduce((prev, curr) => {
+            prev += curr.percentage;
+            return prev;
+        }, 0) / 5);
+        const totalPercentageElem = document.getElementById('total-percentage') as HTMLDivElement;
+        if (!totalPercentageElem) {
             return;
         }
-
-        //TODO We need a global state for the 5 boxes. Parsing the values from the HTML is a pain in the ass
-        // const textEl = shadowRoot.querySelector(".box-percentage-text");
-        // const previousPercent
-        // console.log(el)
+        totalPercentageElem.innerHTML = `${total}% Complete`
     }
 
     mouseMove(event: MouseEvent) {
