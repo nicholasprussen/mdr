@@ -169,19 +169,28 @@ export class GlobalState {
             return;
         }
         const elementBoundingRect = shippingBox.element.getBoundingClientRect();
-        clickedCells.forEach(cell => {
-            cell.previousDirection = cell.direction;
-            cell.direction = 5;
-            cell.containerDestinationPos = {
-                containerX: elementBoundingRect.x + (elementBoundingRect.width / 2),
-                containerY: elementBoundingRect.y + (elementBoundingRect.height / 2)
-            }
-        })
+        console.log(shippingBox.element);
+        (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement).style.animation = '6s ease-in-out open-left-side';
+        (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement).style.animation = '6s ease-in-out open-right-side';
 
+        setTimeout(() => {
+           clickedCells.forEach(cell => {
+                cell.previousDirection = cell.direction;
+                cell.direction = 5;
+                cell.containerDestinationPos = {
+                    containerX: elementBoundingRect.x + (elementBoundingRect.width / 2),
+                    containerY: elementBoundingRect.y + (elementBoundingRect.height / 2)
+                }
+            }) 
+        }, 500);
+        
         setTimeout(() => {
             shippingBox.addToTotalPercent(Math.round(Math.random() * 12));
             this.updateTotalPercentage();
-        }, 1000)
+            this.paused = false;
+            (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement).style.animation = '';
+            (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement).style.animation = '';
+        }, 6000);
     }
 
     updateTotalPercentage(): void {
@@ -253,12 +262,12 @@ export class GlobalState {
       
         this.CHANGE_PER_FRAME = 10 / fps;
       
-        if (this.paused) {
-          const noneMoving = !this.Grid.some(cell => cell.direction === Direction.TO_CONTAINER);
-          if (noneMoving) {
-              this.paused = false;
-          }
-        }
+        // if (this.paused) {
+        //   const noneMoving = !this.Grid.some(cell => cell.direction === Direction.TO_CONTAINER);
+        //   if (noneMoving) {
+        //       this.paused = false;
+        //   }
+        // }
         
         this.canvasContext.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
         this.Grid.forEach(cell => cell.drawNumber(this.canvasContext, this.numFramesSinceReset, this.totalFramesSinceAppStart, this.mouseX, this.mouseY));

@@ -1,5 +1,6 @@
 :root {
     --accent: #aaf3fc;
+    --background: #010408;
 }
 
 @keyframes loading {
@@ -21,7 +22,7 @@ html, body {
     height: 100svh;
     width: 100svw;
     overflow: hidden;
-    background-color: #010408;
+    background-color: var(--background);
     color: white;
     font-family: "Poppins";
     color: var(--accent);
