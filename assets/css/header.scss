@@ -1,0 +1,207 @@
+.header {
+    width: 100%;
+    padding: 0 1rem;
+}
+
+#percentage-container {
+    display: flex;
+    gap: 0.5rem;
+    margin-right: 200px;
+}
+
+.percentage {
+    font-size: 2em;
+    margin: 0;
+    padding: 0;
+    color: var(--background);
+    -webkit-text-stroke: 2px var(--accent);
+}
+
+.header-inner {
+    max-width: 1280px;
+    height: 61px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0.25rem;
+    border-left: var(--accent) 5px solid;
+    border-right: unset;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    position: relative;
+    justify-content: space-between;
+
+    & > * {
+        transform: translateY(-2.5px);
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        display: block;
+        top: -5px;
+        left: -5px;
+        height: 5px;
+        width: 90%;
+        background-color: var(--accent);
+        //border: var(--accent) 5px solid;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        display: block;
+        bottom: 0px;
+        left: 0;
+        height: 5px;
+        width: 90%;
+        background-color: var(--accent);
+        //border: var(--accent) 5px solid;
+    }
+}
+
+#case-file {
+    margin: 0;
+    padding: 0;
+    font-weight: bolder;
+
+    font-size: 2em;
+}
+
+.lumon-logo-container {
+    position: absolute;
+    height: 106px;
+    width: 200px;
+    right: -10px;
+    top: -25px;
+    transform: translateX(2.5px);
+    // background: blue;
+    // opacity: 0.5;
+
+    .outer-oval {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: var(--accent) 5px solid;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--background);
+        overflow: hidden;
+
+        .top-border {
+            position: absolute;
+            top: 15px;
+            width: 100%;
+            height: 5px;
+            background-color: var(--accent);
+        }
+
+        .bottom-border {
+            position: absolute;
+            width: 100%;
+            height: 5px;
+            background-color: var(--accent);
+            top: 76px;
+        }
+
+        .middle-border {
+            position: absolute;
+            width: 100%;
+            height: 5px;
+            background-color: var(--accent);
+        }
+
+        .lumon-text-container  {
+            width: 85%;
+            height: 40%;
+            background-color: var(--background);
+            z-index: 99;
+
+            .lumon-text {
+                width: 90%;
+                margin-left: 5%;
+                height: 100%;
+                // background-color: var(--background);
+                // z-index: 99;
+                background-image: url('../img/lumon-text-accented.png');
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: 50%;
+                // border-top: var(--accent) 5px solid;
+            }
+        }
+    }
+
+    .medium-oval {
+        border: var(--accent) 5px solid;
+        border-radius: 50%;
+        width: 75%;
+        height: calc(100% + 10px);
+        top: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        position: absolute;
+    }
+
+    .inner-oval {
+        border: var(--accent) 5px solid;
+        border-radius: 50%;
+        width: 50%;
+        height: calc(100% + 10px);
+        top: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        position: absolute;
+    }
+}
+
+.lumon-logo {
+    height: 130%;
+    background-color: var(--background);
+}
+
+@media screen and (max-width: 920px) {
+    #complete {
+        display: none;
+    }
+
+    #case-file {
+        line-height: 1;
+        height: fit-content;
+        text-align: center;
+        font-size: 1.5em;
+    }
+
+    .header-inner {
+        height: 51px;
+        margin-top: calc(1.5em + 2.5px);
+        margin-bottom: calc(1.5em - 2.5px);
+    }
+
+    #percentage-container {
+        margin-right: 150px;
+    }
+
+    .percentage {
+        font-size: 1em;
+    }
+
+    .lumon-logo-container {
+        width: 150px;
+        height: 86px;
+        top: -20px;
+
+        .outer-oval {
+            .top-border {
+                top: 10px;
+            }
+
+            .bottom-border {
+                top: 60px;
+            }
+        }
+    }
+}
