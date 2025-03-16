@@ -120,13 +120,16 @@ boxy-box {
 
 .header-inner {
     max-width: 1280px;
+    height: 66px;
     margin-left: auto;
     margin-right: auto;
     padding: 0.25rem;
     border: var(--accent) 5px solid;
+    border-right: unset;
     margin-top: 2rem;
     margin-bottom: 2rem;
     display: flex;
+    position: relative;
     justify-content: space-between;
 }
 
@@ -134,4 +137,101 @@ boxy-box {
     margin: 0;
     padding: 0;
     font-weight: bolder;
+}
+
+.header-end {
+    margin-right: 12ch;
+}
+
+.header-end h1 {
+    margin: 0;
+    padding: 0;
+    color: var(--background);
+    -webkit-text-stroke: 2px var(--accent);
+}
+
+.lumon-logo-container {
+    position: absolute;
+    height: 106px;
+    width: 200px;
+    right: -100px;
+    top: -25px;
+    // background: blue;
+    // opacity: 0.5;
+
+    .outer-oval {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: var(--accent) 5px solid;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--background);
+        overflow: hidden;
+
+        .top-border {
+            position: absolute;
+            top: 15px;
+            width: 100%;
+            height: 5px;
+            background-color: var(--accent);
+        }
+
+        .bottom-border {
+            position: absolute;
+            width: 100%;
+            height: 5px;
+            background-color: var(--accent);
+            top: 76px;
+        }
+
+        .lumon-text-container  {
+            width: 85%;
+            height: 40%;
+            background-color: var(--background);
+            z-index: 99;
+
+            .lumon-text {
+                width: 90%;
+                margin-left: 5%;
+                height: 100%;
+                // background-color: var(--background);
+                // z-index: 99;
+                background-image: url('../img/lumon-text-accented.png');
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: 50%;
+                // border-top: var(--accent) 5px solid;
+            }
+        }
+    }
+
+    .medium-oval {
+        border: var(--accent) 5px solid;
+        border-radius: 50%;
+        width: 75%;
+        height: calc(100% + 10px);
+        top: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        position: absolute;
+    }
+
+    .inner-oval {
+        border: var(--accent) 5px solid;
+        border-radius: 50%;
+        width: 50%;
+        height: calc(100% + 10px);
+        top: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        position: absolute;
+    }
+}
+
+.lumon-logo {
+    height: 130%;
+    background-color: var(--background);
 }
