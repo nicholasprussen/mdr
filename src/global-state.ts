@@ -1,5 +1,5 @@
 import { Cell } from "./cell";
-import { CELL_SIZE, CLICK_DISTANCE } from "./constants";
+import { CELL_SIZE, CLICK_DISTANCE, MOUSE_MAX_DISTANCE } from "./constants";
 import { Direction } from "./direction";
 import { ShippingBox } from "./shipping-box";
 
@@ -69,9 +69,19 @@ export class GlobalState {
         
         this.canvasElement = document.createElement('canvas');
 
-        this.canvasElement.addEventListener('mousemove', this.mouseMove.bind(this));
-        this.canvasElement.addEventListener('mouseup', this.mouseUp.bind(this));
-        this.canvasElement.addEventListener('mousedown', this.mouseDown.bind(this));
+
+        if (
+            ('ontouchstart' in window) ||
+            (navigator.maxTouchPoints > 0)
+        ) {
+            this.canvasElement.addEventListener('touchstart', this.mouseDown.bind(this));
+            this.canvasElement.addEventListener('touchend', this.mouseUp.bind(this));
+            this.canvasElement.addEventListener('touchmove', this.mouseMove.bind(this));
+        } else {
+            this.canvasElement.addEventListener('mousemove', this.mouseMove.bind(this));
+            this.canvasElement.addEventListener('mouseup', this.mouseUp.bind(this));
+            this.canvasElement.addEventListener('mousedown', this.mouseDown.bind(this));
+        }
 
         // this.setupBoxListeners();
 
@@ -202,12 +212,23 @@ export class GlobalState {
         if (!totalPercentageElem) {
             return;
         }
-        totalPercentageElem.innerHTML = `${total}% Complete`
+        totalPercentageElem.innerHTML = `${total}%`;
     }
 
-    mouseMove(event: MouseEvent) {
-        this.mouseX = event.clientX - this.offsetX;
-        this.mouseY = event.clientY - this.offsetY;
+    mouseMove(event: MouseEvent | TouchEvent) {
+        if (
+            ('ontouchstart' in window) ||
+            (navigator.maxTouchPoints > 0)
+        ) {
+            event = event as TouchEvent;
+            this.mouseX = event.touches[0].clientX - this.offsetX;
+            this.mouseY = event.touches[0].clientY - this.offsetY;
+        } else {
+            event = event as MouseEvent;
+            this.mouseX = event.clientX - this.offsetX;
+            this.mouseY = event.clientY - this.offsetY;
+        }
+        
         if (!this.mouseCurrentlyClicked) {
             return;
         }
@@ -217,10 +238,6 @@ export class GlobalState {
 
     selectBoxes(): void {
         const boxes = this.Grid.filter(cell => cell.distanceFromMouse < CLICK_DISTANCE && !cell.selected);
-        //const box = cells.find(cell => cell.x <= mouseX && (cell.x + cellSize) > mouseX && cell.y <= mouseY && (cell.y + cellSize) > mouseY)
-        // if (box === previousCell) {
-        //     return;
-        // }
         boxes.forEach(box => {
             box.selected = true;
             box.previousDirection = box.direction;
@@ -228,15 +245,20 @@ export class GlobalState {
                 box.direction = Direction.BACK_TO_CENTER;
             }
         })
-        // box.clicked = true;
-        // previousCell = box;
     }
 
-    mouseUp(event: MouseEvent): void {
+    mouseUp(_: MouseEvent | TouchEvent): void {
         this.mouseCurrentlyClicked = false;
+        if (
+            ('ontouchstart' in window) ||
+            (navigator.maxTouchPoints > 0)
+        ) {
+            this.mouseX = 999999999;
+            this.mouseY = 999999999;
+        }
     }
 
-    mouseDown(event: MouseEvent): void {
+    mouseDown(_: MouseEvent | TouchEvent): void {
         if (this.paused) {
             return;
         }

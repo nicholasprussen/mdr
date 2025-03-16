@@ -1,0 +1,17 @@
+.hex-footer {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    border-top: var(--accent) solid 5px;
+}
+
+.hex-container {
+    display: flex;
+    gap: 2em;
+    font-size: 1.5em;
+    /* margin-bottom: 15vh; */
+}
+
+.hex-container > span {
+    user-select: none;
+}

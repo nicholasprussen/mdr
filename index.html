@@ -10,7 +10,7 @@
 
 
     <template id="box">
-        <link rel="stylesheet" type="text/css" href="assets/css/box.scss">
+        <link rel="stylesheet" type="text/css" href="assets/css/shadow-box.scss">
         <div class="box">
             <div class="shadow-top">
                 <div class="shadow-side shadow-top-left"></div>
@@ -49,12 +49,13 @@
 
     <body class="body" id="body">
         <div class="app">
-            <div class="header">
-                <div class="header-container">
+            <div class="header-container">
+                <div class="header">
                     <div class="header-inner">
-                        <h1>Dranesville</h1>
-                        <div id="total-percentage" class="header-end">
-                            <h1>0% Complete</h1>
+                        <p id="case-file">Dranesville</p>
+                        <div id="percentage-container">
+                            <p class="percentage" id="total-percentage">0%</h1>
+                            <p class="percentage" id="complete">Complete</h1>
                         </div>
                         <div class="lumon-logo-container">
                             <div class="outer-oval">
@@ -64,6 +65,7 @@
                                     </div>
                                 </div>
                                 <div class="top-border"></div>
+                                <div class="middle-border"></div>
                                 <div class="bottom-border"></div>
                                 <div class="lumon-text-container">
                                     <div class="lumon-text"></div>
@@ -73,8 +75,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="box-extra-top-border"></div>
             </div>
+            <div class="box-extra-top-border"></div>
             <div id="canvas-container" class="canvas-container">
                 <!-- <canvas id="canvas"></canvas> -->
             </div>
