@@ -1,3 +1,4 @@
+import { BoxInfo } from "./box-info";
 import { Cell } from "./cell";
 import { CELL_SIZE, CLICK_DISTANCE, MOUSE_MAX_DISTANCE } from "./constants";
 import { Direction } from "./direction";
@@ -42,6 +43,7 @@ export class GlobalState {
     lastDrawDate: Date;
 
     CHANGE_PER_FRAME = 0.12;
+    fps: number = 60;
 
     mouseX: number = 9999999999;
     mouseY: number = 9999999999;
@@ -150,6 +152,7 @@ export class GlobalState {
                             yLoc,
                             () => this.CHANGE_PER_FRAME,
                             () => this.paused,
+                            () => this.fps,
                             x === 0 && y===0)
                     );
                 }
@@ -178,21 +181,17 @@ export class GlobalState {
             this.paused = false;
             return;
         }
-        const elementBoundingRect = shippingBox.element.getBoundingClientRect();
         console.log(shippingBox.element);
-        (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement).style.animation = '6s ease-in-out open-left-side';
-        (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement).style.animation = '6s ease-in-out open-right-side';
+        (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement).style.animation = '2s ease-in-out open-left-side';
+        (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement).style.animation = '2s ease-in-out open-right-side';
 
         setTimeout(() => {
            clickedCells.forEach(cell => {
                 cell.previousDirection = cell.direction;
                 cell.direction = 5;
-                cell.containerDestinationPos = {
-                    containerX: elementBoundingRect.x + (elementBoundingRect.width / 2),
-                    containerY: elementBoundingRect.y + (elementBoundingRect.height / 2)
-                }
+                cell.setTargetBoxAndStartArcAnimation(shippingBox.element);
             }) 
-        }, 500);
+        });
         
         setTimeout(() => {
             shippingBox.addToTotalPercent(Math.round(Math.random() * 12));
@@ -200,7 +199,7 @@ export class GlobalState {
             this.paused = false;
             (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement).style.animation = '';
             (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement).style.animation = '';
-        }, 6000);
+        }, 2000);
     }
 
     updateTotalPercentage(): void {
@@ -279,10 +278,10 @@ export class GlobalState {
         if (diff > 100) {
           diff = 100;
         }
-        var fps = 1000 / diff;
+        this.fps = 1000 / diff;
         this.lastDrawDate = date;
       
-        this.CHANGE_PER_FRAME = 10 / fps;
+        this.CHANGE_PER_FRAME = 10 / this.fps;
       
         // if (this.paused) {
         //   const noneMoving = !this.Grid.some(cell => cell.direction === Direction.TO_CONTAINER);

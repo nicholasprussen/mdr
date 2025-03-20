@@ -8,3 +8,4 @@ export const MAX_FONT_SIZE = 75;
 export const DEFAULT_FONT_SIZE = 32;
 export const CHANCE_TO_MOVE = 0.40;
 export const CLICK_DISTANCE = CELL_SIZE * 0.5;
+export const TOTAL_SECONDS_TO_BIN_NUMBER = 1.5;

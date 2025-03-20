@@ -1,5 +1,9 @@
-import { CELL_SIZE, CHANCE_TO_MOVE, CHANGE_PER_FRAME, DEFAULT_FONT_SIZE, FRAMES_TO_FULL_SPEED, MAX_FONT_SIZE, MAX_WARM_UP_PERIOD, MOUSE_MAX_DISTANCE, TRIGGER_DIRECTION_CHANGE_MARGIN } from "./constants";
+import { CELL_SIZE, CHANCE_TO_MOVE, CHANGE_PER_FRAME, DEFAULT_FONT_SIZE, FRAMES_TO_FULL_SPEED, MAX_FONT_SIZE, MAX_WARM_UP_PERIOD, MOUSE_MAX_DISTANCE, TOTAL_SECONDS_TO_BIN_NUMBER, TRIGGER_DIRECTION_CHANGE_MARGIN } from "./constants";
 import { Direction } from "./direction";
+import { BuildCircle } from "./helpers/build-circle";
+import { CenterPoint } from "./helpers/center-point";
+import { distance } from "./helpers/distance";
+import { BinNumbersAnimation } from "./interfaces/bin-numbers-animation";
 
 export type NumBoundingBox = {
     maxX: number,
@@ -34,16 +38,10 @@ export class Cell {
     private cellCenterX: number;
     private cellCenterY: number;
 
-    private _containerDestinationPos: ContainerDestinationPos | undefined;
-    set containerDestinationPos(containerDestPos: ContainerDestinationPos) {
-        this._containerDestinationPos = containerDestPos;
-    }
-    get containerDestinationPos(): ContainerDestinationPos | undefined {
-        return this._containerDestinationPos;
-    }
+    private binNumberAnimation: BinNumbersAnimation | null = null;
 
     changePerFrame: () => number = () => CHANGE_PER_FRAME;
-
+    averageFramerateGetter: () => number = () => 60;
     paused: () => boolean = () => false;
 
     log: boolean = false;
@@ -53,6 +51,7 @@ export class Cell {
         yPosInGrid: number,
         changePerFrameGetter: () => number,
         pauseGetter: () => boolean,
+        averageFramerateGetter: () => number,
         log: boolean
     ) {
         this.xPosInGrid = xPosInGrid;
@@ -63,6 +62,7 @@ export class Cell {
 
         this.changePerFrame = changePerFrameGetter;
         this.paused = pauseGetter;
+        this.averageFramerateGetter = averageFramerateGetter;
 
         this.NumBoundingBox = this.generateBoundingBox();
 
@@ -75,6 +75,46 @@ export class Cell {
         if (this.log) {
             console.log(this)
         }
+    }
+
+    public setTargetBoxAndStartArcAnimation(targetBox: HTMLElement): void {
+        this.binNumberAnimation = new BinNumbersAnimation();
+        this.binNumberAnimation.boxElement = targetBox;
+        const targetBoxBoundingBox = targetBox.getBoundingClientRect();
+        this.binNumberAnimation.numberPos = {
+            x: this.xNumSubPosition,
+            y: this.yNumSubPosition
+        };
+        this.binNumberAnimation.boxPos = {
+            x: targetBoxBoundingBox.left + (targetBoxBoundingBox.width / 2),
+            y: targetBoxBoundingBox.top - 100
+        }
+        this.binNumberAnimation.circleDetails = BuildCircle(
+            this.binNumberAnimation.numberPos,
+            this.binNumberAnimation.boxPos
+        );
+
+        this.binNumberAnimation.midpointPos = CenterPoint(this.binNumberAnimation.numberPos.x, this.binNumberAnimation.boxPos.x, this.binNumberAnimation.numberPos.y, this.binNumberAnimation.boxPos.y);
+
+        this.binNumberAnimation.startingAngle = Math.atan2(
+            this.yNumSubPosition - this.binNumberAnimation.circleDetails.center.y,
+            this.xNumSubPosition - this.binNumberAnimation.circleDetails.center.x);
+        this.binNumberAnimation.startingAngle = (this.binNumberAnimation.startingAngle + 2 * Math.PI) % (2 * Math.PI);
+        this.binNumberAnimation.currentAngle = this.binNumberAnimation.startingAngle;
+        this.binNumberAnimation.endingAngle = Math.atan2(
+            this.binNumberAnimation.boxPos.y - this.binNumberAnimation.circleDetails.center.y,
+            this.binNumberAnimation.boxPos.x - this.binNumberAnimation.circleDetails.center.x);
+        this.binNumberAnimation.endingAngle = (this.binNumberAnimation.endingAngle + 2 * Math.PI) % (2 * Math.PI);
+        this.binNumberAnimation.totalAngleCovered = 0;
+        if (this.binNumberAnimation.numberPos.x > this.binNumberAnimation.boxPos.x) {
+            this.binNumberAnimation.totalAngleCovered = this.binNumberAnimation.startingAngle - this.binNumberAnimation.endingAngle;
+        } else {
+            this.binNumberAnimation.totalAngleCovered = this.binNumberAnimation.endingAngle - this.binNumberAnimation.startingAngle;
+        }
+
+        this.binNumberAnimation.totalAngleCovered = (this.binNumberAnimation.totalAngleCovered + 2 * Math.PI) % (2 * Math.PI);
+
+        this.binNumberAnimation.anglePerFrame = this.binNumberAnimation.totalAngleCovered / (TOTAL_SECONDS_TO_BIN_NUMBER * this.averageFramerateGetter());
     }
 
     public resetNum(newX: number, newY: number): void {
@@ -160,6 +200,13 @@ export class Cell {
         }
     }
 
+    private moveNumberInArc() {
+        if (!this.binNumberAnimation) return;
+        this.xNumSubPosition = this.binNumberAnimation.circleDetails.center?.x + this.binNumberAnimation.circleDetails?.radius * Math.cos(this.binNumberAnimation.currentAngle);
+        this.yNumSubPosition = this.binNumberAnimation.circleDetails?.center.y + this.binNumberAnimation.circleDetails?.radius * Math.sin(this.binNumberAnimation.currentAngle);
+        this.binNumberAnimation.currentAngle += (this.binNumberAnimation.numberPos.x > this.binNumberAnimation.boxPos.x ? -(this.binNumberAnimation.anglePerFrame) : this.binNumberAnimation.anglePerFrame);
+    }
+
     updateNumPos(framesSinceLastReset: number, totalFramesSinceAppStart: number): void {
         if (this.timeToWaitInMiliseconds > framesSinceLastReset && !this.pastWarmUpPeriod && !this.paused()) { //Return if we don't want you to move yet
             return;
@@ -173,8 +220,6 @@ export class Cell {
             this.pastWarmUpPeriod = true;
             speed = this.changePerFrame();
         }
-
-        let reachedDestination: boolean = false;
 
         switch(this.direction) {
             case Direction.NORTH: //North
@@ -218,10 +263,11 @@ export class Cell {
 
                 break;
             case Direction.TO_CONTAINER: //Destination
-                if (this.containerDestinationPos == undefined) {
+                if (this.binNumberAnimation === null) {
                     break;
                 }
-                if (this.xNumSubPosition === this.containerDestinationPos.containerX && this.yNumSubPosition === this.containerDestinationPos.containerY) {
+                
+                if (distance(this.xNumSubPosition, this.binNumberAnimation.boxPos.x, this.yNumSubPosition, this.binNumberAnimation.boxPos.y) < 10) {
                     this.centerNumX();
                     this.centerNumY();
                     this.pastWarmUpPeriod = false;
@@ -229,15 +275,13 @@ export class Cell {
                     this.number = this.getRandomNumber();
                     this.direction = this.previousDirection;
                     this.selected = false;
+                    this.binNumberAnimation = null;
                     return;
                 }
 
-                let speedX = speed * 100;
-                let speedY = speed * 75;
-
-
-                this.moveNumberTowardDestination(this.containerDestinationPos.containerX, this.containerDestinationPos.containerY, speedX, speedY);
+                this.moveNumberInArc();
                 break;
+            //TODO: add direction for going straight down into box
         }
     }
 
@@ -256,10 +300,27 @@ export class Cell {
         return opacity;
     }
 
+    /**
+     * Modifies the previous font value when binning numbers to 
+     * decrease the size of the font exponentially
+     * @returns Modified font value
+     */
+    fontGoingIntoBinSizeMultiplier(): number {
+        if (!this.binNumberAnimation) throw new Error("Shouldn't call this when animation undefined");
+        const distanceToBin = distance(this.binNumberAnimation?.boxPos.x, this.xNumSubPosition, this.binNumberAnimation?.boxPos.y, this.yNumSubPosition);
+        const progress = distanceToBin / this.binNumberAnimation.circleDetails.distance;
+        const modifier = Math.exp(-0.005 * progress);
+        return modifier * this.previousFontSize;
+    }
+
     getFontSize(distance: number, selected: boolean): string {
         let upperLimit = MAX_FONT_SIZE;
         let maxDist = MOUSE_MAX_DISTANCE;
         if (selected) {
+            if (this.binNumberAnimation) {
+                this.previousFontSize = this.fontGoingIntoBinSizeMultiplier();
+                return `${this.previousFontSize}px helvetica`;
+            }
             if (this.previousFontSize === upperLimit) {
                 return `${this.previousFontSize}px helvetica`;
             }
@@ -294,11 +355,47 @@ export class Cell {
         if (this.direction != undefined) {
             this.updateNumPos(framesSinceLastReset, totalFramesSinceAppStart);
         }
+
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillStyle = `rgba(170, 243, 252, ${this.getFontOpacity(totalFramesSinceAppStart)})`;
         this.distanceFromMouse = this.calculateDistanceToMouse(this.xNumSubPosition, this.yNumSubPosition, mouseX, mouseY);
         ctx.font = this.getFontSize(this.distanceFromMouse, this.selected);
         ctx.fillText(this.number.toString(), this.xNumSubPosition, this.yNumSubPosition);
+
+        //Use for showing arc of number to box
+        // if (this.binNumberAnimation) {
+        //     // Draw a circle
+        //     // ctx.fillStyle = '#ffff00';
+        //     // ctx.beginPath();
+        //     // ctx.arc(this.binNumberAnimation.circleDetails?.center.x, this.binNumberAnimation.circleDetails?.center.y,this.binNumberAnimation.circleDetails?.radius, 0, 2 * Math.PI); // (x, y, radius, startAngle, endAngle)
+        //     // ctx.fill();
+        //     // ctx.closePath();
+
+        //     ctx.fillStyle = '#ff00ff';
+        //     ctx.beginPath();
+        //     ctx.arc(this.binNumberAnimation.numberPos.x, this.binNumberAnimation.numberPos.y, 20, 0, 2 * Math.PI); // (x, y, radius, startAngle, endAngle)
+        //     ctx.fill();
+        //     ctx.closePath();
+
+        //     ctx.fillStyle = '#ff00ff';
+        //     ctx.beginPath();
+        //     ctx.arc(this.binNumberAnimation.boxPos.x, this.binNumberAnimation.boxPos.y - 100, 20, 0, 2 * Math.PI); // (x, y, radius, startAngle, endAngle)
+        //     ctx.fill();
+        //     ctx.closePath();
+
+        //     ctx.fillStyle = '#ff00ff';
+        //     ctx.beginPath();
+        //     ctx.arc(this.binNumberAnimation.circleDetails.extraCoord.x, this.binNumberAnimation.circleDetails?.extraCoord.y, 20, 0, 2 * Math.PI); // (x, y, radius, startAngle, endAngle)
+        //     ctx.fill();
+        //     ctx.closePath();
+
+        //     ctx.fillStyle = '#0000ff';
+        //     ctx.beginPath();
+        //     ctx.arc(this.binNumberAnimation.midpointPos.x, this.binNumberAnimation.midpointPos.y, 20, 0, 2 * Math.PI); // (x, y, radius, startAngle, endAngle)
+        //     ctx.fill();
+
+        //     ctx.closePath();
+        // }
     }
 }
