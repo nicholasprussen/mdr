@@ -1,10 +1,15 @@
 @import url('./header.scss');
 @import url('./box.scss');
 @import url('./footer.scss');
+@import url('./animations.scss');
 
 :root {
     --accent: #aaf3fc;
     --background: #010408;
+}
+
+.hex-footer, .box-extra-top-border, .boxes, .header {
+    animation: fade-in 3s;
 }
 
 @keyframes loading {
