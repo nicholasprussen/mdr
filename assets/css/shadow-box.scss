@@ -57,23 +57,14 @@
         //border-top: var(--accent) 5px solid;
     }
 
-    & .shadow-top-left {
-        //transform-origin: calc(0% + 2px) calc(0% + 4px);
-        //transform: rotate(-135deg);
-        //animation-name: open-left-side;
-        //animation-duration: 6s;
-        //animation-iteration-count: infinite;
-        //animation-timing-function: ease-in-out;
-        //transform-origin: 3% 4px;
+    & .shadow-top-left[open="true"] {
+        transform: rotate(-135deg);
+        transform-origin: 3% 4px;
     }
 
-    & .shadow-top-right {
-        //transform-origin: calc(100% + -2px) calc(100% - 2px);
-        //transform: rotate(135deg);
-        //animation-name: open-right-side;
-        //animation-duration: 6s;
-        //animation-iteration-count: infinite;
-        //animation-timing-function: ease-in-out;
+    & .shadow-top-right[open="true"] {
+        transform: rotate(135deg);
+        transform-origin: 97.5% 4px;
     }
 }
 
