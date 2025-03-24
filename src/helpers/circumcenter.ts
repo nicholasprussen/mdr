@@ -1,4 +1,4 @@
-import { Coord } from "../interfaces/coord";
+import { Coord } from "../models/coord";
 
 export function Circumcenter(p1: Coord, p2: Coord, p3: Coord): Coord {
     const a = p2.x - p1.x;

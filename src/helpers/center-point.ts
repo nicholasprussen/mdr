@@ -1,4 +1,4 @@
-import { Coord } from "../interfaces/coord";
+import { Coord } from "../models/coord";
 
 export function CenterPoint(x1: number, x2: number, y1: number, y2: number): Coord {
     return {

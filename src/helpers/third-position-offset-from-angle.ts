@@ -1,4 +1,4 @@
-import { Coord } from "../interfaces/coord"
+import { Coord } from "../models/coord"
 
 export function ThirdPositionOffsetFromAngle(number: Coord, destination: Coord, angleDegrees: number = 10): Coord {
     const distanceX = Math.abs(number.x - destination.x);

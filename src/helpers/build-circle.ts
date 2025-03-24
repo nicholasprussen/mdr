@@ -1,5 +1,5 @@
-import { CircleDetails } from "../interfaces/circle-details";
-import { Coord } from "../interfaces/coord";
+import { CircleDetails } from "../models/circle-details";
+import { Coord } from "../models/coord";
 import { Circumcenter } from "./circumcenter";
 import { distance } from "./distance";
 import { ThirdPositionOffsetFromAngle } from "./third-position-offset-from-angle";

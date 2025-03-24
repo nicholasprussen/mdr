@@ -1,7 +1,5 @@
-import { BoxInfo } from "./box-info";
 import { Cell } from "./cell";
-import { CELL_SIZE, CLICK_DISTANCE, MOUSE_MAX_DISTANCE } from "./constants";
-import { Direction } from "./direction";
+import { CELL_SIZE, CLICK_DISTANCE, MAX_PERCENTAGE_PER_NUMBER, MIN_PERCENTAGE_PER_NUMBER } from "./constants";
 import { ShippingBox } from "./shipping-box";
 
 export type ShippingBoxMap = {
@@ -159,10 +157,10 @@ export class GlobalState {
                 index++;
             }
         }
-        if (rebuild === true) {
-            this.numFramesSinceReset = 0;
-            this.Grid.forEach(cell => cell.pastWarmUpPeriod = false);
-        }
+        // if (rebuild === true) {
+        //     this.numFramesSinceReset = 0;
+        //     this.Grid.forEach(cell => cell.pastWarmUpPeriod = false);
+        // }
     }
 
     setupBoxListeners(): void {
@@ -174,7 +172,31 @@ export class GlobalState {
         }
     }
 
-    containerBoxClickListener(event: MouseEvent, shippingBox: ShippingBox): void {
+    private startBoxOpenAnimation(shippingBox: ShippingBox): void {
+        const leftFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement);
+        const rightFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement);
+
+        leftFlap.style.animation = `0.5s 1 ease-in-out open-left-side forwards`;
+        rightFlap.style.animation = `0.5s 1 ease-in-out open-right-side forwards`;
+    }
+
+    private closeBoxAnimation(shippingBox: ShippingBox): void {
+        const leftFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement);
+        const rightFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement);
+
+        leftFlap.style.animation = `0.5s 1 ease-in-out close-left-side forwards`;
+        rightFlap.style.animation = `0.5s 1 ease-in-out close-right-side forwards`;
+    }
+
+    private clearBoxAnimation(shippingBox: ShippingBox): void {
+        const leftFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement);
+        const rightFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement);
+
+        leftFlap.style.animation = ``;
+        rightFlap.style.animation = ``;
+    }
+
+    async containerBoxClickListener(_: MouseEvent, shippingBox: ShippingBox): Promise<void> {
         this.paused = true;
         const clickedCells = this.Grid.filter(cell => cell.selected);
         if (clickedCells.length < 1) {
@@ -182,24 +204,28 @@ export class GlobalState {
             return;
         }
         console.log(shippingBox.element);
-        (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement).style.animation = '2s ease-in-out open-left-side';
-        (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement).style.animation = '2s ease-in-out open-right-side';
+        this.startBoxOpenAnimation(shippingBox);
 
-        setTimeout(() => {
-           clickedCells.forEach(cell => {
-                cell.previousDirection = cell.direction;
-                cell.direction = 5;
-                cell.setTargetBoxAndStartArcAnimation(shippingBox.element);
-            }) 
+        const cellFinishedBinningPromises: Promise<void>[] = [];
+
+        let percentageToBeAdded: number = 0;
+
+        clickedCells.forEach(cell => {
+            const promiseToFinish = cell.moveNumberToBin(shippingBox.element);
+            cellFinishedBinningPromises.push(promiseToFinish);
+            const percentageForThisNumber = Math.random() * (MAX_PERCENTAGE_PER_NUMBER - MIN_PERCENTAGE_PER_NUMBER) + MIN_PERCENTAGE_PER_NUMBER;
+            percentageToBeAdded += percentageForThisNumber;
+        })
+
+        await Promise.all(cellFinishedBinningPromises).then(() => {
+            this.closeBoxAnimation(shippingBox);
+            setTimeout(() => {
+                shippingBox.addToTotalPercent(Math.floor(percentageToBeAdded));
+                this.updateTotalPercentage();
+                this.paused = false;
+                this.clearBoxAnimation(shippingBox);
+            }, 500);
         });
-        
-        setTimeout(() => {
-            shippingBox.addToTotalPercent(Math.round(Math.random() * 12));
-            this.updateTotalPercentage();
-            this.paused = false;
-            (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement).style.animation = '';
-            (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement).style.animation = '';
-        }, 2000);
     }
 
     updateTotalPercentage(): void {
@@ -239,10 +265,6 @@ export class GlobalState {
         const boxes = this.Grid.filter(cell => cell.distanceFromMouse < CLICK_DISTANCE && !cell.selected);
         boxes.forEach(box => {
             box.selected = true;
-            box.previousDirection = box.direction;
-            if (box?.direction !== undefined) {
-                box.direction = Direction.BACK_TO_CENTER;
-            }
         })
     }
 
@@ -263,8 +285,8 @@ export class GlobalState {
         }
         this.Grid.filter(cell => cell.selected).forEach(cell => {
             cell.selected = false;
-            cell.direction = cell.previousDirection;
-            cell.pastWarmUpPeriod = false;
+            cell.generateNumberShiftAnimation();
+            //cell.pastWarmUpPeriod = false;
         })
         this.numFramesSinceReset = 0;
         this.mouseCurrentlyClicked = true;
@@ -291,7 +313,7 @@ export class GlobalState {
         // }
         
         this.canvasContext.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
-        this.Grid.forEach(cell => cell.drawNumber(this.canvasContext, this.numFramesSinceReset, this.totalFramesSinceAppStart, this.mouseX, this.mouseY));
+        this.Grid.forEach(cell => cell.drawNumber(this.canvasContext, this.mouseX, this.mouseY));
         this.numFramesSinceReset++;
         this.totalFramesSinceAppStart++;
       
