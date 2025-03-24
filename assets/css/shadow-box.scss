@@ -82,15 +82,14 @@
         transform: rotate(0);
         transform-origin: 3% 4px;
     }
-    16.66667% {
+    100% {
         transform: rotate(-135deg);
         transform-origin: 3% 4px;
     }
-    // 37.5% {
-    //     transform: rotate(-135deg);
-    //     transform-origin: 3% 4px;
-    // }
-    83.333333% {
+}
+
+@keyframes close-left-side {
+    0% {
         transform: rotate(-135deg);
         transform-origin: 3% 4px;
     }
@@ -105,11 +104,14 @@
         transform: rotate(0);
         transform-origin: 97% 4px;
     }
-    16.66667% {
+    100% {
         transform: rotate(135deg);
         transform-origin: 97.5% 4px;
     }
-    83.33333% {
+}
+
+@keyframes close-right-side {
+    0% {
         transform: rotate(135deg);
         transform-origin: 97.5% 4px;
     }
