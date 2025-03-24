@@ -175,17 +175,20 @@ export class GlobalState {
     private startBoxOpenAnimation(shippingBox: ShippingBox): void {
         const leftFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement);
         const rightFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement);
-
-        leftFlap.style.animation = `0.5s 1 ease-in-out open-left-side forwards`;
-        rightFlap.style.animation = `0.5s 1 ease-in-out open-right-side forwards`;
+        leftFlap.style.animation = `0.5s 1 ease-in-out open-left-side`;
+        rightFlap.style.animation = `0.5s 1 ease-in-out open-right-side`;
+        leftFlap.setAttribute('open', 'true');
+        rightFlap.setAttribute('open', 'true');
     }
 
     private closeBoxAnimation(shippingBox: ShippingBox): void {
         const leftFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement);
         const rightFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement);
 
-        leftFlap.style.animation = `0.5s 1 ease-in-out close-left-side forwards`;
-        rightFlap.style.animation = `0.5s 1 ease-in-out close-right-side forwards`;
+        leftFlap.style.animation = `0.5s 1 ease-in-out close-left-side`;
+        rightFlap.style.animation = `0.5s 1 ease-in-out close-right-side`;
+        leftFlap.setAttribute('open', 'false');
+        rightFlap.setAttribute('open', 'false');
     }
 
     private clearBoxAnimation(shippingBox: ShippingBox): void {
@@ -194,6 +197,10 @@ export class GlobalState {
 
         leftFlap.style.animation = ``;
         rightFlap.style.animation = ``;
+
+        leftFlap.removeAttribute('open');
+        rightFlap.removeAttribute('open');
+        
     }
 
     async containerBoxClickListener(_: MouseEvent, shippingBox: ShippingBox): Promise<void> {
