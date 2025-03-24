@@ -66,6 +66,16 @@
         transform: rotate(135deg);
         transform-origin: 97.5% 4px;
     }
+
+    & .shadow-top-left[open="false"] {
+        transform: rotate(0);
+        transform-origin: 3% 4px;
+    }
+
+    & .shadow-top-right[open="false"] {
+        transform: rotate(0);
+        transform-origin: 97% 4px;
+    }
 }
 
 @keyframes open-left-side {

@@ -175,8 +175,8 @@ export class GlobalState {
     private startBoxOpenAnimation(shippingBox: ShippingBox): void {
         const leftFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement);
         const rightFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement);
-        leftFlap.style.animation = `0.5s 1 ease-in-out open-left-side`;
-        rightFlap.style.animation = `0.5s 1 ease-in-out open-right-side`;
+        leftFlap.style.animation = `500ms 1 ease-in-out open-left-side`;
+        rightFlap.style.animation = `500ms 1 ease-in-out open-right-side`;
         leftFlap.setAttribute('open', 'true');
         rightFlap.setAttribute('open', 'true');
     }
@@ -185,8 +185,8 @@ export class GlobalState {
         const leftFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement);
         const rightFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement);
 
-        leftFlap.style.animation = `0.5s 1 ease-in-out close-left-side`;
-        rightFlap.style.animation = `0.5s 1 ease-in-out close-right-side`;
+        leftFlap.style.animation = `500ms 1 ease-in-out close-left-side`;
+        rightFlap.style.animation = `500ms 1 ease-in-out close-right-side`;
         leftFlap.setAttribute('open', 'false');
         rightFlap.setAttribute('open', 'false');
     }
