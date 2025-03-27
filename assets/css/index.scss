@@ -102,29 +102,28 @@ body::before {
 }
 
 .completion-prompt-container {
-    position: absolute;
-    height: 50%;
-    width: 75%;
-    left: 50%;
-}
-
-.completion-prompt-container {
+    display: none;
     pointer-events: none;
     position: absolute;
     max-width: 1200px;
     width: 75%;
     height: 50%;
     left: 50%;
-    transform: translate(-50%, 50%) scale(0);
     z-index: 999;
     background-color: var(--background);
     border: 5px solid var(--accent);
     padding: 5px;
-    transition: transform 1s ease-in-out;
+    //transition: transform 1s ease-in-out;
+}
+
+.completion-prompt-container[completed="false"] {
+    transform: translate(-50%, 50%) scale(0);
+    -webkit-transform: translate(-50%, 50%) scale(0);
 }
 
 .completion-prompt-container[completed="true"] {
     transform: translate(-50%, 50%) scale(1);
+    -webkit-transform: translate(-50%, 50%) scale(1);
 }
 
 .completion-prompt {
@@ -140,9 +139,11 @@ body::before {
 @keyframes expand-completion-prompt {
     from {
         transform: translate(-50%, 50%) scale(0);
+        -webkit-transform: translate(-50%, 50%) scale(0);
     }
     to {
         transform: translate(-50%, 50%) scale(1);
+        -webkit-transform: translate(-50%, 50%) scale(1);
     }
 }
 
