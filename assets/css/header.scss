@@ -7,14 +7,37 @@
     display: flex;
     gap: 0.5rem;
     margin-right: 200px;
+    position: relative;
+    z-index: 52;
+}
+
+.header-percentage-fill {
+    width: calc(100% - 170px);
+    height: calc(100% - 5px);
+    z-index: 50;
+    position: absolute;
+    top: 2.5px;
+    right: 170px;
+    //mix-blend-mode: difference;
+}
+
+#header-percentage-inner-fill {
+    position: absolute;
+    right: 0;
+    top: -1px;
+    width: 0%;
+    height: calc(100% + 2px);
+    background-color: var(--accent);
 }
 
 .percentage {
-    font-size: 2em;
+    font-size: 2.5em;
+    font-weight: bold;
     margin: 0;
     padding: 0;
     color: var(--background);
-    -webkit-text-stroke: 2px var(--accent);
+    -webkit-text-stroke: 1px var(--accent);
+    z-index: 52;
 }
 
 .header-inner {
@@ -45,6 +68,7 @@
         height: 5px;
         width: 90%;
         background-color: var(--accent);
+        z-index: 99;
         //border: var(--accent) 5px solid;
     }
 
@@ -57,6 +81,7 @@
         height: 5px;
         width: 90%;
         background-color: var(--accent);
+        z-index: 99;
         //border: var(--accent) 5px solid;
     }
 }
@@ -64,9 +89,11 @@
 #case-file {
     margin: 0;
     padding: 0;
-    font-weight: bolder;
-
-    font-size: 2em;
+    font-weight: bold;
+    margin-left: 0.5rem;
+    font-size: 3em;
+    mix-blend-mode: difference;
+    z-index: 99;
 }
 
 .lumon-logo-container {
@@ -76,7 +103,8 @@
     right: -10px;
     top: -25px;
     transform: translateX(2.5px);
-    // background: blue;
+    //background: blue;
+    z-index: 51;
     // opacity: 0.5;
 
     .outer-oval {
@@ -126,7 +154,7 @@
                 height: 100%;
                 // background-color: var(--background);
                 // z-index: 99;
-                background-image: url('../img/lumon-text-accented.png');
+                background-image: url('../img/lumon-logo-accented-new.png');
                 background-size: contain;
                 background-repeat: no-repeat;
                 background-position: 50%;
@@ -172,7 +200,7 @@
         line-height: 1;
         height: fit-content;
         text-align: center;
-        font-size: 1.5em;
+        font-size: 2.5em;
     }
 
     .header-inner {
@@ -181,12 +209,17 @@
         margin-bottom: calc(1.5em - 2.5px);
     }
 
+    .header-percentage-fill {
+        width: calc(100% - 120px);
+        right: 120px;
+    }
+
     #percentage-container {
         margin-right: 150px;
     }
 
     .percentage {
-        font-size: 1em;
+        font-size: 2.5em;
     }
 
     .lumon-logo-container {
@@ -203,5 +236,31 @@
                 top: 60px;
             }
         }
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #case-file {
+        line-height: 1;
+        height: fit-content;
+        text-align: center;
+        font-size: 2em;
+    }
+
+    .percentage {
+        font-size: 1.75em;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    #case-file {
+        line-height: 1;
+        height: fit-content;
+        text-align: center;
+        font-size: 1.5em;
+    }
+
+    .percentage {
+        font-size: 1.5em;
     }
 }
