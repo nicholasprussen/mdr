@@ -5,7 +5,7 @@ let state: GlobalState;
 function init() {
   generateHexCodes();
   state = new GlobalState();
-  state.animate();
+  state.animate(0);
 }
 
 

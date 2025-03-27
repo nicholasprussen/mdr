@@ -33,7 +33,7 @@ export class NumberFadeInAnimation extends Animation {
         this.changePerFrame = amountLeft / (this.duration * this.cell.averageFramerateGetter());
     }
 
-    public override updateNumberPosition(_: Cell): void {
+    public override updateNumberPosition(timeSinceAnimStarted: number, _: Cell): void {
         let nextOpacity = this.previousOpacity + this.changePerFrame;
         if (nextOpacity > 1) {
             nextOpacity = 1;

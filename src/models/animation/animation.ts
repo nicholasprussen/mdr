@@ -24,6 +24,10 @@ export class Animation {
         return distance(this.startPos.x, this.destPos.x, this.startPos.y, this.destPos.y);
     }
 
+    public get durationInSeconds(): number { 
+        return this.duration;
+    }
+
     completed: () => boolean;
 
     constructor(
@@ -48,7 +52,17 @@ export class Animation {
         };
     }
 
-    public updateNumberPosition(_: Cell): void {
+    public updateNumberPosition(timeSinceAnimStarted: number, cell: Cell): void {
         throw new Error("Method not imlpemented");
     };
+
+    protected easeInOutSine(progress: number): number {
+        return -(Math.cos(Math.PI * progress) - 1) / 2;
+    }
+
+    protected easeInOutCubic(progress: number): number {
+        return progress < 0.5
+            ? 2 * progress * progress
+            : -1 + (4 - 2 * progress) * progress;
+    }
 }

@@ -13,8 +13,8 @@ export const MIN_WARM_UP_DURATION = 1;
 export const MAX_WARM_UP_DURATION = 3;
 
 //Number animation
-export const MIN_NUMBER_ANIMATION_DURATION = 1;
-export const MAX_NUMBER_ANIMATION_DURATION = 2;
+export const MIN_NUMBER_ANIMATION_DURATION = 3;
+export const MAX_NUMBER_ANIMATION_DURATION = 3.5;
 export const CHANCE_TO_MOVE = 0.40;
 
 //Move number to center
@@ -33,6 +33,35 @@ export const TOTAL_SECONDS_TO_BIN_NUMBER = 1.5;
 //Percentage per number
 export const MIN_PERCENTAGE_PER_NUMBER = 0.1;
 export const MAX_PERCENTAGE_PER_NUMBER = 2.5;
+
+//Case files
+export const CaseFiles: string[] = [
+    "Allentown",
+    "Trinity",
+    "Todos Santos",
+    "Astoria",
+    "Lucknow",
+    "St. Pierre",
+    "Coleman",
+    "Waynesboro",
+    "Cork",
+    "Molde",
+    "Cairns",
+    "Bodo",
+    "Zurich",
+    "Culpepper",
+    "Bellingham",
+    "Billings",
+    "Yakima",
+    "Loveland",
+    "Merida",
+    "Sopchoppy",
+    "Vilnius",
+    "Rhodes",
+    "Wellington",
+    "Dranesville",
+    "Cold Harbor"
+];
 
 // export const FRAMES_TO_FULL_SPEED = 200;
 // export const MAX_WARM_UP_PERIOD = 1000;

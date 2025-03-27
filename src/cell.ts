@@ -1,11 +1,10 @@
-import { CELL_SIZE, CHANCE_TO_MOVE, CHANGE_PER_FRAME, DEFAULT_FONT_SIZE, MAX_FADE_IN_START_TIME, MAX_FONT_SIZE, MAX_NUMBER_ANIMATION_DURATION, MIN_FADE_IN_START_TIME, MIN_NUMBER_ANIMATION_DURATION, MOUSE_MAX_DISTANCE, TRIGGER_DIRECTION_CHANGE_MARGIN } from "./constants";
+import { CHANCE_TO_MOVE, CHANGE_PER_FRAME, DEFAULT_FONT_SIZE, MAX_FADE_IN_START_TIME, MAX_FONT_SIZE, MAX_NUMBER_ANIMATION_DURATION, MIN_FADE_IN_START_TIME, MIN_NUMBER_ANIMATION_DURATION, MOUSE_MAX_DISTANCE, MOVE_NUMBER_TO_CENTER_DURATION, TRIGGER_DIRECTION_CHANGE_MARGIN } from "./constants";
 import { Direction } from "./direction";
 import { Coord } from "./models/coord";
 import { Animation } from "./models/animation/animation";
 import { NumberFadeInAnimation } from "./models/animation/number-fade-in-animation";
 import { AnimationType } from "./models/animation/animation-type";
 import { NumberShiftAnimation } from "./models/animation/number-shift-animation";
-import { NumberToCenterAnimation } from "./models/animation/number-to-center-animation";
 import { NumbersToBinAnimation } from "./models/animation/numbers-to-bin-animation";
 import { distance } from "./helpers/distance";
 
@@ -27,13 +26,23 @@ export class Cell {
     private yPosInGrid: number | undefined;
     private xNumSubPosition: number = 0;
     private yNumSubPosition: number = 0;
+    private cellSize: number = 0;
 
     public selected: boolean = false;
 
     private previousFontSize: number = 32;
     public distanceFromMouse: number = 9999999;
 
-    private animation: Animation | null;
+    //private frameCountWhenAnimationStarted: number = 0;
+    private timeWhenAnimationStarted: number = 0;
+    private _animation: Animation | null;
+    set animation(animation: Animation | null) {
+        this._animation = animation;
+        this.timeWhenAnimationStarted = this.getTimeElapsed();
+    }
+    get animation(): Animation | null {
+        return this._animation;
+    }
 
     private NumBoundingBox: NumBoundingBox;
 
@@ -51,6 +60,8 @@ export class Cell {
     changePerFrame: () => number = () => CHANGE_PER_FRAME;
     averageFramerateGetter: () => number = () => 60;
     paused: () => boolean = () => false;
+    //getCurrentFrameCount: () => number = () => 0;
+    getTimeElapsed: () => number = () => 0;
 
     log: boolean = false;
 
@@ -81,20 +92,24 @@ export class Cell {
     constructor(
         xPosInGrid: number,
         yPosInGrid: number,
+        cellSize: number,
         changePerFrameGetter: () => number,
         pauseGetter: () => boolean,
         averageFramerateGetter: () => number,
+        getTimeElapsed: () => number,
         log: boolean
     ) {
         this.xPosInGrid = xPosInGrid;
         this.yPosInGrid = yPosInGrid;
+        this.cellSize = cellSize;
 
-        this.cellCenterX = this.xPosInGrid + (CELL_SIZE / 2);
-        this.cellCenterY = this.yPosInGrid + (CELL_SIZE / 2);
+        this.cellCenterX = this.xPosInGrid + (this.cellSize / 2);
+        this.cellCenterY = this.yPosInGrid + (this.cellSize / 2);
 
         this.changePerFrame = changePerFrameGetter;
         this.paused = pauseGetter;
         this.averageFramerateGetter = averageFramerateGetter;
+        this.getTimeElapsed = getTimeElapsed;
 
         this.NumBoundingBox = this.generateBoundingBox();
 
@@ -119,9 +134,9 @@ export class Cell {
     private generateBoundingBox(): NumBoundingBox {
         return {
             minY: (this.yPosInGrid ?? 0) + TRIGGER_DIRECTION_CHANGE_MARGIN,
-            maxY: (this.yPosInGrid ?? 0) + (CELL_SIZE - TRIGGER_DIRECTION_CHANGE_MARGIN),
+            maxY: (this.yPosInGrid ?? 0) + (this.cellSize - TRIGGER_DIRECTION_CHANGE_MARGIN),
             minX: (this.xPosInGrid ?? 0) + TRIGGER_DIRECTION_CHANGE_MARGIN,
-            maxX: (this.xPosInGrid ?? 0) + (CELL_SIZE - TRIGGER_DIRECTION_CHANGE_MARGIN)
+            maxX: (this.xPosInGrid ?? 0) + (this.cellSize - TRIGGER_DIRECTION_CHANGE_MARGIN)
         }
     }
 
@@ -152,14 +167,17 @@ export class Cell {
         }, (timeToWaitBeforeFadeIn * 1000))
     }
 
-    public generateNumberShiftAnimation(): void {
-        const chance = Math.random();
+    public generateNumberShiftAnimation(overrideDirection?: Direction): void {
+        const chance = (overrideDirection !== undefined) ? 0 : Math.random();
         if (chance > CHANCE_TO_MOVE) {
             this.animation = null;
             return;
         }
-        const direction = Math.floor(Math.random() * 4);
-        const duration = Math.random() * (MAX_NUMBER_ANIMATION_DURATION - MIN_NUMBER_ANIMATION_DURATION) + MIN_NUMBER_ANIMATION_DURATION;
+        let direction: Direction = (overrideDirection !== undefined) ? overrideDirection : Math.floor(Math.random() * 4);
+        if (this.log && overrideDirection === undefined) {
+            direction = Direction.NORTH;
+        }
+        const duration = (overrideDirection !== undefined) ? (this.animation?.durationInSeconds ?? MAX_NUMBER_ANIMATION_DURATION) : Math.random() * (MAX_NUMBER_ANIMATION_DURATION - MIN_NUMBER_ANIMATION_DURATION) + MIN_NUMBER_ANIMATION_DURATION;
         this.animation = new NumberShiftAnimation(
             direction as Direction,
             this,
@@ -183,14 +201,15 @@ export class Cell {
         this.xNumSubPosition = this.cellCenterX;
     }
 
-    updateNumPos(): void {
-        if (this.selected && this.animation?.type === AnimationType.NUMBER_SHIFT) {
-            this.animation = new NumberToCenterAnimation(this);
+    updateNumPos(timeElapsed: number): void {
+        if (this.selected && this.animation?.type === AnimationType.NUMBER_SHIFT && !(this.animation as NumberShiftAnimation)?.toCenter) {
+            this.animation = new NumberShiftAnimation(Direction.NORTH, this, MOVE_NUMBER_TO_CENTER_DURATION, true, true);
             return;
         }
 
         if (this.animation && !this.animation.completed()) {
-            this.animation.updateNumberPosition(this);
+            const timeSinceAnimStarted = timeElapsed - this.timeWhenAnimationStarted;
+            this.animation.updateNumberPosition(timeSinceAnimStarted, this);
         }
 
         if (!this.animation?.completed()) {
@@ -210,6 +229,29 @@ export class Cell {
                 this.numberFinishedBinning = null;
                 this.animation = null;
                 this.fullResetNumber();
+                break;
+            case AnimationType.NUMBER_SHIFT:
+                //Check if it's a back to center animation
+                const localAnimation = this.animation as NumberShiftAnimation;
+                if (localAnimation.toCenter) {
+                    this.animation = null;
+                    break;
+                }
+
+                switch (localAnimation.direction) {
+                    case Direction.EAST:
+                        this.generateNumberShiftAnimation(Direction.WEST);
+                        break;
+                    case Direction.WEST:
+                        this.generateNumberShiftAnimation(Direction.EAST);
+                        break;
+                    case Direction.NORTH:
+                        this.generateNumberShiftAnimation(Direction.SOUTH);
+                        break;
+                    case Direction.SOUTH:
+                        this.generateNumberShiftAnimation(Direction.NORTH);
+                        break;
+                }
                 break;
         }
     }
@@ -242,44 +284,46 @@ export class Cell {
         if (selected) {
             if (this.animation?.type === AnimationType.NUMBER_TO_BIN) {
                 this.previousFontSize = this.fontGoingIntoBinSizeMultiplier();
-                return `${this.previousFontSize}px helvetica`;
+                return `bold ${this.previousFontSize}px open-sans`;
             }
             if (this.previousFontSize === upperLimit) {
-                return `${this.previousFontSize}px helvetica`;
+                return `bold ${this.previousFontSize}px open-sans`;
             }
             this.previousFontSize += (this.changePerFrame() * 2);
             if (this.previousFontSize > upperLimit) {
                 this.previousFontSize = upperLimit;
             }
-            return `${this.previousFontSize}px helvetica`;
+            return `bold ${this.previousFontSize}px open-sans`;
         } else {
             this.previousFontSize = DEFAULT_FONT_SIZE;
         }
         if (Number.isNaN(distance)) {
             this.previousFontSize = DEFAULT_FONT_SIZE;
-            return `${this.previousFontSize}px helvetica`;
+            return `bold ${this.previousFontSize}px open-sans`;
         }
         let diff = upperLimit - DEFAULT_FONT_SIZE;
         if (distance > maxDist) {
-            return `${this.previousFontSize}px helvetica`;
+            return `bold ${this.previousFontSize}px open-sans`;
         }
         let ratio = 1 - (distance / maxDist);
         this.previousFontSize = DEFAULT_FONT_SIZE + (diff * ratio);
-        return `${this.previousFontSize}px helvetica`
+        return `bold ${this.previousFontSize}px open-sans`
     }
 
     drawNumber(
         ctx: CanvasRenderingContext2D,
         mouseX: number,
-        mouseY: number
+        mouseY: number,
+        timeElapsed: number
     ): void {
         if (this.animation != undefined) {
-            this.updateNumPos();
+            this.updateNumPos(timeElapsed);
         }
 
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillStyle = `rgba(170, 243, 252, ${this.opacity})`;
+        //ctx.fillStyle = `rgba(170, 243, 252, ${this.opacity})`;
+        ctx.fillStyle = `rgba(82, 251, 253, ${this.opacity})`;
         this.distanceFromMouse = distance(this.xNumSubPosition, mouseX, this.yNumSubPosition, mouseY);
         ctx.font = this.getFontSize(this.distanceFromMouse, this.selected);
         ctx.fillText(this.number.toString(), this.xNumSubPosition, this.yNumSubPosition);

@@ -1,5 +1,5 @@
 import { Cell } from "./cell";
-import { CELL_SIZE, CLICK_DISTANCE, MAX_PERCENTAGE_PER_NUMBER, MIN_PERCENTAGE_PER_NUMBER } from "./constants";
+import { CaseFiles, CELL_SIZE, CLICK_DISTANCE, MAX_PERCENTAGE_PER_NUMBER, MIN_PERCENTAGE_PER_NUMBER } from "./constants";
 import { ShippingBox } from "./shipping-box";
 
 export type ShippingBoxMap = {
@@ -49,8 +49,18 @@ export class GlobalState {
 
     ShippingBoxMap: ShippingBoxMap;
 
+    cellSize: number = 0;
+
+    timeElapsed: number = 0;
+
+    caseName: string = CaseFiles[(Math.floor(Math.random() * CaseFiles.length))];
+
+    fileCompleted: boolean = false;
+
     constructor() {
+        this.setCaseName();
         this.createCanvas();
+        this.cellSize = this.generateCellSize();
         this.createGrid();
 
         this.ShippingBoxMap = this.createShippingBoxes();
@@ -59,6 +69,14 @@ export class GlobalState {
         this.lastDrawDate = new Date();
 
         window.addEventListener('resize', this.resize.bind(this));
+    }
+
+    setCaseName(): void {
+        const caseFileElem = document.getElementById('case-file');
+        if (caseFileElem == null) {
+            return;
+        }
+        caseFileElem.innerText = this.caseName;
     }
 
     createCanvas(): void {
@@ -97,12 +115,24 @@ export class GlobalState {
         this.canvasContainer.appendChild(this.canvasElement);
     }
 
-    createGrid(): void {
-        this.gridWidth = Math.floor(this.canvasWidth / CELL_SIZE);
-        this.gridHeight = Math.floor(this.canvasHeight / CELL_SIZE);
+    generateCellSize(): number {
+        return CELL_SIZE;
+        // const canvasModifier = this.canvasWidth / 700;
+        // console.log(this.canvasWidth);
+        // let modifiedCellSize = CELL_SIZE * canvasModifier;
+        // console.log(modifiedCellSize)
+        // if (modifiedCellSize < CELL_SIZE) {
+        //     modifiedCellSize = CELL_SIZE;
+        // }
+        // return modifiedCellSize;
+    }
 
-        this.marginX = (this.canvasWidth - (this.gridWidth * CELL_SIZE)) / 2;
-        this.marginY = (this.canvasHeight - (this.gridHeight * CELL_SIZE)) / 2;
+    createGrid(): void {
+        this.gridWidth = Math.floor(this.canvasWidth / this.cellSize);
+        this.gridHeight = Math.floor(this.canvasHeight / this.cellSize);
+
+        this.marginX = (this.canvasWidth - (this.gridWidth * this.cellSize)) / 2;
+        this.marginY = (this.canvasHeight - (this.gridHeight * this.cellSize)) / 2;
 
         const canvasBoundingRect = this.canvasElement?.getBoundingClientRect();
         this.offsetX = canvasBoundingRect?.left ?? 0;
@@ -137,8 +167,8 @@ export class GlobalState {
         let index = 0;
         for(let x = 0; x < this.gridWidth; x++) {
             for (let y = 0; y < this.gridHeight; y++) {
-                let xLoc = this.marginX + (x * CELL_SIZE);
-                let yLoc = this.marginY + (y * CELL_SIZE);
+                let xLoc = this.marginX + (x * this.cellSize);
+                let yLoc = this.marginY + (y * this.cellSize);
                 const existing = gridCopy[index];
                 if (existing !== null && existing !== undefined) {
                     this.Grid.push(gridCopy[index]);
@@ -148,9 +178,11 @@ export class GlobalState {
                         new Cell(
                             xLoc,
                             yLoc,
+                            this.cellSize,
                             () => this.CHANGE_PER_FRAME,
                             () => this.paused,
                             () => this.fps,
+                            () => this.timeElapsed,
                             x === 0 && y===0)
                     );
                 }
@@ -236,15 +268,36 @@ export class GlobalState {
     }
 
     updateTotalPercentage(): void {
-        const total = Math.round(Object.values(this.ShippingBoxMap).reduce((prev, curr) => {
+        let total = Math.floor(Object.values(this.ShippingBoxMap).reduce((prev, curr) => {
             prev += curr.percentage;
             return prev;
         }, 0) / 5);
+        
+        //update header
         const totalPercentageElem = document.getElementById('total-percentage') as HTMLDivElement;
         if (!totalPercentageElem) {
             return;
         }
         totalPercentageElem.innerHTML = `${total}%`;
+
+        const totalPercentageFill = document.getElementById('header-percentage-inner-fill') as HTMLDivElement;
+        console.log(totalPercentageFill)
+        if (!totalPercentageFill) {
+            return;
+        }
+        totalPercentageFill.style.width = `${total}%`;
+
+        if (total === 100) {
+            const promptElem = document.getElementById('completion-prompt-container') as HTMLDivElement;
+            if (promptElem == null) {
+                return;
+            }
+            promptElem.setAttribute('completed', 'true');
+
+            setTimeout(() => {
+                this.fileCompleted = true;
+            }, 1000)
+        }
     }
 
     mouseMove(event: MouseEvent | TouchEvent) {
@@ -299,7 +352,8 @@ export class GlobalState {
         this.mouseCurrentlyClicked = true;
     }
 
-    animate() {
+    animate(timeStamp: number) {
+        this.timeElapsed = timeStamp;
         this.canvasContext.fillStyle = "#010408";
       
         let date = new Date();
@@ -320,10 +374,13 @@ export class GlobalState {
         // }
         
         this.canvasContext.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
-        this.Grid.forEach(cell => cell.drawNumber(this.canvasContext, this.mouseX, this.mouseY));
+        this.Grid.forEach(cell => cell.drawNumber(this.canvasContext, this.mouseX, this.mouseY, this.timeElapsed));
         this.numFramesSinceReset++;
         this.totalFramesSinceAppStart++;
       
+        if (this.fileCompleted) {
+            return;
+        }
         requestAnimationFrame(this.animate.bind(this));
     }
 
@@ -338,10 +395,10 @@ export class GlobalState {
         this.offsetX = boundingRect.left;
         this.canvasWidth = this.canvasElement.width;
         this.canvasHeight = this.canvasElement.height;
-        this.gridWidth =  Math.floor(this.canvasWidth / CELL_SIZE);
-        this.gridHeight = Math.floor(this.canvasHeight / CELL_SIZE);
-        this.marginY = (this.canvasHeight - (this.gridHeight * CELL_SIZE)) / 2;
-        this.marginX = (this.canvasWidth - (this.gridWidth * CELL_SIZE)) / 2;
+        this.gridWidth =  Math.floor(this.canvasWidth / this.cellSize);
+        this.gridHeight = Math.floor(this.canvasHeight / this.cellSize);
+        this.marginY = (this.canvasHeight - (this.gridHeight * this.cellSize)) / 2;
+        this.marginX = (this.canvasWidth - (this.gridWidth * this.cellSize)) / 2;
         this.buildCells(true);
     }
 }

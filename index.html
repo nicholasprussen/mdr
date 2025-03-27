@@ -52,6 +52,9 @@
             <div class="header-container">
                 <div class="header">
                     <div class="header-inner">
+                        <div class="header-percentage-fill">
+                            <div id="header-percentage-inner-fill"></div>
+                        </div>
                         <p id="case-file">Dranesville</p>
                         <div id="percentage-container">
                             <p class="percentage" id="total-percentage">0%</h1>
@@ -78,6 +81,11 @@
             </div>
             <div class="box-extra-top-border"></div>
             <div id="canvas-container" class="canvas-container">
+                <div class="completion-prompt-container" id="completion-prompt-container">
+                    <div class="completion-prompt">
+                        100%
+                    </div>
+                </div>
                 <!-- <canvas id="canvas"></canvas> -->
             </div>
             <div class="boxes">
@@ -110,7 +118,6 @@
                 </div>
             </div>
         </div>
-        <div class="overlay"></div>
     </body>
     <script onload type="module" src="./src/index.ts"></script>
 </html>

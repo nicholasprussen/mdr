@@ -74,7 +74,7 @@ export class NumbersToBinAnimation extends Animation {
         this.anglePerFrame = this.totalAngleCovered / (this.duration * this.cell.averageFramerateGetter());
     }
 
-    public override updateNumberPosition(cell: Cell): void {
+    public override updateNumberPosition(timeSinceAnimStarted: number, cell: Cell): void {
         let newPos: Coord = {
             x: this.circleDetails.center?.x + this.circleDetails?.radius * Math.cos(this.currentAngle),
             y: this.circleDetails?.center.y + this.circleDetails?.radius * Math.sin(this.currentAngle)
