@@ -272,8 +272,6 @@ export class GlobalState {
             prev += curr.percentage;
             return prev;
         }, 0) / 5);
-
-        total = 100;
         
         //update header
         const totalPercentageElem = document.getElementById('total-percentage') as HTMLDivElement;
