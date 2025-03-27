@@ -272,6 +272,8 @@ export class GlobalState {
             prev += curr.percentage;
             return prev;
         }, 0) / 5);
+
+        total = 100;
         
         //update header
         const totalPercentageElem = document.getElementById('total-percentage') as HTMLDivElement;
@@ -292,10 +294,13 @@ export class GlobalState {
             if (promptElem == null) {
                 return;
             }
+            promptElem.style.display = 'block';
             promptElem.setAttribute('completed', 'true');
+            promptElem.style.animation = '1s 1 ease-in-out expand-completion-prompt';
 
             setTimeout(() => {
                 this.fileCompleted = true;
+                promptElem.style.animation = '';
             }, 1000)
         }
     }
