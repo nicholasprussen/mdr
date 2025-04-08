@@ -1,0 +1,64 @@
+@use 'sass:math';
+
+// @mixin gradient($steps, $initial-blue-width, $black-width, $growth-factor) {
+//     $gradient: '';
+//     $blue-width: $initial-blue-width;
+  
+//     @for $i from 1 through $steps {
+//       // Append black section
+//       $gradient: #{$gradient}, black #{($i - 1) * $black-width}px, black #{$i * $black-width}px;
+      
+//       // Append blue section with scaling width
+//       $gradient: #{$gradient}, blue #{$i * $black-width}px, blue #{($i * $black-width + $blue-width)}px;
+      
+//       // Adjust blue width dynamically using a scaled growth factor
+//       $blue-width: $blue-width + ($growth-factor * $i);
+//     }
+  
+//     background: repeating-linear-gradient(to right, #{$gradient});
+//   }
+
+// @mixin gradient($steps, $initial-blue-width, $black-width, $growth-factor, $start-blue-after) {
+//     $gradient: '';
+//     $blue-width: $initial-blue-width;
+//     $threshold: math.floor($steps * $start-blue-after); // Calculate when blue starts
+  
+//     @for $i from 1 through $steps {
+//       // Append black section
+//       $gradient: #{$gradient}, black #{($i - 1) * $black-width}px, black #{$i * $black-width}px;
+  
+//       // Append blue section only after the threshold is reached
+//       @if $i > $threshold {
+//         $gradient: #{$gradient}, blue #{$i * $black-width}px, blue #{($i * $black-width + $blue-width)}px;
+//         $blue-width: $blue-width + ($growth-factor * $i); // Scale blue width gradually
+//       }
+//     }
+  
+//     background: repeating-linear-gradient(to right, #{$gradient});
+//   }
+
+@mixin gradient($steps, $initial-blue-width, $black-width, $growth-factor, $start-blue-after) {
+    $gradient: '';
+    $blue-width: $initial-blue-width;
+    $threshold: math.floor($steps * $start-blue-after); // Calculate when blue starts
+  
+    @for $i from 1 through $steps {
+      $position: math.percentage(calc($i / $steps)); // Convert step to percentage
+  
+      // Append black section
+      $gradient: #{$gradient}, var(--background) math.percentage(calc(($i - 1) / $steps)), var(--background) $position;
+  
+      // Append blue section only after the threshold
+      @if $i > $threshold {
+        $next-position: math.percentage(calc(($i * $black-width + $blue-width) / ($steps * $black-width)));
+        $gradient: #{$gradient}, var(--accent) $position, var(--accent) $next-position;
+        $blue-width: $blue-width + ($growth-factor * $i); // Scale blue width gradually
+      }
+    }
+  
+    background: repeating-linear-gradient(to right, #{$gradient});
+  }
+
+.header-percentage-fill {
+    @include gradient(50, 1, 10, 0.009, 0.001);
+}

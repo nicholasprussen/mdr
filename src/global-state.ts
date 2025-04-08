@@ -207,32 +207,37 @@ export class GlobalState {
     private startBoxOpenAnimation(shippingBox: ShippingBox): void {
         const leftFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement);
         const rightFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement);
-        leftFlap.style.animation = `500ms 1 ease-in-out open-left-side`;
-        rightFlap.style.animation = `500ms 1 ease-in-out open-right-side`;
+        const centerFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-middle') as HTMLDivElement);
+        //leftFlap.style.animation = `500ms ease-in-out lid-left-close reverse`;
+        //rightFlap.style.animation = `500ms ease-in-out lid-right-close reverse`;
+        //centerFlap.style.animation = `500ms ease-in-out center-close reverse`
         leftFlap.setAttribute('open', 'true');
         rightFlap.setAttribute('open', 'true');
+        centerFlap.setAttribute('open', 'true');
     }
 
     private closeBoxAnimation(shippingBox: ShippingBox): void {
         const leftFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement);
         const rightFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement);
-
-        leftFlap.style.animation = `500ms 1 ease-in-out close-left-side`;
-        rightFlap.style.animation = `500ms 1 ease-in-out close-right-side`;
+        const centerFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-middle') as HTMLDivElement);
+        //leftFlap.style.animation = `500ms ease-in-out lid-left-close normal`;
+        //rightFlap.style.animation = `500ms ease-in-out lid-right-close normal`;
+        //centerFlap.style.animation = `500ms ease-in-out center-close normal`
         leftFlap.setAttribute('open', 'false');
         rightFlap.setAttribute('open', 'false');
+        centerFlap.setAttribute('open', 'false');
     }
 
     private clearBoxAnimation(shippingBox: ShippingBox): void {
         const leftFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-left') as HTMLDivElement);
         const rightFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-top-right') as HTMLDivElement);
-
-        leftFlap.style.animation = ``;
-        rightFlap.style.animation = ``;
-
+        const centerFlap = (shippingBox.element.shadowRoot?.querySelector('.shadow-middle') as HTMLDivElement);
+        //leftFlap.style.animation = ``;
+        //rightFlap.style.animation = ``;
+        //centerFlap.style.animation = ``;
         leftFlap.removeAttribute('open');
         rightFlap.removeAttribute('open');
-        
+        centerFlap.removeAttribute('open');
     }
 
     async containerBoxClickListener(_: MouseEvent, shippingBox: ShippingBox): Promise<void> {
@@ -262,8 +267,8 @@ export class GlobalState {
                 shippingBox.addToTotalPercent(Math.floor(percentageToBeAdded));
                 this.updateTotalPercentage();
                 this.paused = false;
-                this.clearBoxAnimation(shippingBox);
-            }, 500);
+                //this.clearBoxAnimation(shippingBox);
+            }, 1000);
         });
     }
 
@@ -280,12 +285,14 @@ export class GlobalState {
         }
         totalPercentageElem.innerHTML = `${total}%`;
 
-        const totalPercentageFill = document.getElementById('header-percentage-inner-fill') as HTMLDivElement;
+        const totalPercentageFill = document.getElementById('header-percentage-mask') as HTMLDivElement;
         console.log(totalPercentageFill)
         if (!totalPercentageFill) {
             return;
         }
-        totalPercentageFill.style.width = `${total}%`;
+        const totalMinus10 = Math.max(0, (total - 10));
+        totalPercentageFill.style.background = `linear-gradient(90deg, rgba(1, 4, 8, 0) 0%, rgba(1, 4, 8, 0) ${totalMinus10}%${total >= 100 ? '' : `, rgba(1, 4, 8, 1) ${total}%`})`;
+        //totalPercentageFill.style.width = `${total}%`;
 
         if (total === 100) {
             const promptElem = document.getElementById('completion-prompt-container') as HTMLDivElement;

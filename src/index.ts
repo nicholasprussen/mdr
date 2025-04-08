@@ -20,9 +20,9 @@ function debounce(callback: () => {}, delay: number) {
 }
 
 function generateHexCodes(): void {
-  const hexSpans = document.querySelectorAll('span.hex-code') as unknown as HTMLSpanElement[];
+  const hexSpans = document.querySelectorAll('.hex-inner') as unknown as HTMLSpanElement[];
   for(let elem of hexSpans) {
-    elem.innerHTML = '0x'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')?.toUpperCase();
+    elem.innerHTML = (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')?.toUpperCase();
   }
 }
 
