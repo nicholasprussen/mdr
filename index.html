@@ -1,34 +1,40 @@
 <html>
-    <head>
+    <head>
         <script>var exports = {};</script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="assets/css/index.scss">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-      <script type="module" crossorigin src="/mdr/assets/index-Dzaj-Win.js"></script>
+      <script type="module" crossorigin src="/mdr/assets/index-BQBuB2b4.js"></script>
+      <link rel="stylesheet" crossorigin href="/mdr/assets/index-BIJbAOOD.css">
     </head>
 
 
     <template id="box">
         <link rel="stylesheet" type="text/css" href="assets/css/shadow-box.scss">
         <div class="box">
-            <div class="shadow-top">
+            <!-- <div class="shadow-top"> -->
+                
+            <!-- </div> -->
+             <div class="box-inner">
                 <div class="shadow-side shadow-top-left"></div>
                 <div class="shadow-side shadow-top-right"></div>
-            </div>
-            <div class="box-top">
-                <slot name="box-num"></slot>
-            </div>
-            <div class="box-bottom" style="position: relative">
-                <div class="box-progress-bar" style="width: 0%">
-                    
+                <div class="shadow-middle"></div>
+                <div class="box-top">
+                
+                    <slot name="box-num"></slot>
                 </div>
-                <div class="box-percentage">
-                    <span class="box-percentage-text percent-num">0</span>
-                    <span class="box-percentage-text">%</span>
+                <div class="box-bottom" style="position: relative">
+                    <div class="box-progress-bar" style="width: 0%">
+                        
+                    </div>
+                    <div class="box-percentage">
+                        <span class="box-percentage-text percent-num">0</span>
+                        <span class="box-percentage-text">%</span>
+                    </div>
                 </div>
-            </div>
+             </div>
         </div>
     </template>
 
@@ -54,7 +60,8 @@
                 <div class="header">
                     <div class="header-inner">
                         <div class="header-percentage-fill">
-                            <div id="header-percentage-inner-fill"></div>
+                            <div class="header-percentage-inner-fill" id="header-percentage-inner-fill"></div>
+                            <div class="header-percentage-mask" id="header-percentage-mask"></div>
                         </div>
                         <p id="case-file">Dranesville</p>
                         <div id="percentage-container">
@@ -113,9 +120,17 @@
             </div>
             <div class="hex-footer">
                 <div class="hex-container">
-                    <span class="hex-code">0x15DB4A</span>
+                    <span class="hex-code">
+                        <span>0</span>
+                        <span class="lower-x">x</span>
+                        <span class="hex-inner">15DB4A</span>
+                    </span>
                     <span>:</span>
-                    <span class="hex-code">0x0AKAFC</span> 
+                    <span class="hex-code">
+                        <span>0</span>
+                        <span class="lower-x">x</span>
+                        <span class="hex-inner">0AKAFC</span>
+                    </span> 
                 </div>
             </div>
         </div>
