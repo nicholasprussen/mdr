@@ -1,5 +1,6 @@
 <html>
     <head>
+        <link rel="stylesheet" type="text/css" href="special.scss">
         <script>var exports = {};</script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="assets/css/index.scss">
@@ -12,22 +13,27 @@
     <template id="box">
         <link rel="stylesheet" type="text/css" href="assets/css/shadow-box.scss">
         <div class="box">
-            <div class="shadow-top">
+            <!-- <div class="shadow-top"> -->
+                
+            <!-- </div> -->
+             <div class="box-inner">
                 <div class="shadow-side shadow-top-left"></div>
                 <div class="shadow-side shadow-top-right"></div>
-            </div>
-            <div class="box-top">
-                <slot name="box-num"></slot>
-            </div>
-            <div class="box-bottom" style="position: relative">
-                <div class="box-progress-bar" style="width: 0%">
-                    
+                <div class="shadow-middle"></div>
+                <div class="box-top">
+                
+                    <slot name="box-num"></slot>
                 </div>
-                <div class="box-percentage">
-                    <span class="box-percentage-text percent-num">0</span>
-                    <span class="box-percentage-text">%</span>
+                <div class="box-bottom" style="position: relative">
+                    <div class="box-progress-bar" style="width: 0%">
+                        
+                    </div>
+                    <div class="box-percentage">
+                        <span class="box-percentage-text percent-num">0</span>
+                        <span class="box-percentage-text">%</span>
+                    </div>
                 </div>
-            </div>
+             </div>
         </div>
     </template>
 
@@ -53,7 +59,8 @@
                 <div class="header">
                     <div class="header-inner">
                         <div class="header-percentage-fill">
-                            <div id="header-percentage-inner-fill"></div>
+                            <div class="header-percentage-inner-fill" id="header-percentage-inner-fill"></div>
+                            <div class="header-percentage-mask" id="header-percentage-mask"></div>
                         </div>
                         <p id="case-file">Dranesville</p>
                         <div id="percentage-container">
@@ -112,9 +119,17 @@
             </div>
             <div class="hex-footer">
                 <div class="hex-container">
-                    <span class="hex-code">0x15DB4A</span>
+                    <span class="hex-code">
+                        <span>0</span>
+                        <span class="lower-x">x</span>
+                        <span class="hex-inner">15DB4A</span>
+                    </span>
                     <span>:</span>
-                    <span class="hex-code">0x0AKAFC</span> 
+                    <span class="hex-code">
+                        <span>0</span>
+                        <span class="lower-x">x</span>
+                        <span class="hex-inner">0AKAFC</span>
+                    </span> 
                 </div>
             </div>
         </div>
