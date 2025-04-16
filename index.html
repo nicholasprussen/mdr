@@ -51,10 +51,22 @@
         customElements.define('boxy-box', BoxElement);
     </script>
 
-
+    <object style="display: none;" id="svgObject" type="image/svg+xml" data="assets/img/lumon-logo.svg"></object>
 
     <body class="body" id="body">
-        <div class="app">
+        <div id="startup-overlay-container">
+            <div id="startup-animation-container">
+                <div id="startup-animation">
+                    
+                </div>
+                <div id="startup-animation-text"></div>
+                <!-- <img id="startup-animation-text" src="assets/img/lumon-logo-accented-new.png"> -->
+            </div>
+            <div id="startup-overlay"></div>
+            <span class="blinking-cursor">$</span>
+            <!-- <span class="blinking-cursor">$</span> -->
+        </div>
+        <div class="app" id="app">
             <div class="header-container">
                 <div class="header">
                     <div class="header-inner">

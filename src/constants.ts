@@ -34,6 +34,10 @@ export const TOTAL_SECONDS_TO_BIN_NUMBER = 1.5;
 export const MIN_PERCENTAGE_PER_NUMBER = 0.1;
 export const MAX_PERCENTAGE_PER_NUMBER = 2.5;
 
+//Startup
+export const MAX_PRINTOUT_INTERVAL = 300;
+export const MIN_PRINTOUT_INTERVAL = 100;
+
 //Case files
 export const CaseFiles: string[] = [
     "Allentown",

@@ -61,14 +61,18 @@ export class GlobalState {
         this.setCaseName();
         this.createCanvas();
         this.cellSize = this.generateCellSize();
+
+        window.addEventListener('resize', this.resize.bind(this));
+    }
+
+    start(): void {
         this.createGrid();
 
         this.ShippingBoxMap = this.createShippingBoxes();
         console.log(this.ShippingBoxMap);
 
         this.lastDrawDate = new Date();
-
-        window.addEventListener('resize', this.resize.bind(this));
+        this.animate(0);
     }
 
     setCaseName(): void {

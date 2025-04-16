@@ -1,11 +1,27 @@
 import { GlobalState } from "./global-state";
-
+import { Startup } from "./startup";
+import { StartupAnimation } from "./startup-animation";
+import { startupText } from "./startup-text";
 let state: GlobalState;
 
 function init() {
   generateHexCodes();
   state = new GlobalState();
-  state.animate(0);
+  startup();
+  //state.animate(0);
+}
+
+async function startup(): Promise<void> {
+  const startup = new Startup();
+  await startup.start();
+  const startupAnimation = new StartupAnimation();
+  await startupAnimation.start();
+  (document.getElementById('app') as HTMLDivElement).style.animation = 'fade-in 1000ms';
+  setTimeout(() => {
+    (document.getElementById('app') as HTMLDivElement).style.opacity = '1';
+    state.start();
+  }, 500)
+  console.log("Completed")
 }
 
 
