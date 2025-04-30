@@ -2,6 +2,7 @@
 @import url('./box.scss');
 @import url('./footer.scss');
 @import url('./animations.scss');
+@import url('./startup.scss');
 
 :root {
     // --accent: #aaf3fc;
@@ -26,8 +27,12 @@
     font-weight: bold;
 }
 
-.hex-footer, .box-extra-top-border, .boxes, .header {
-    animation: fade-in 3s;
+// .hex-footer, .box-extra-top-border, .boxes, .header {
+//     animation: fade-in 3s;
+// }
+
+.app {
+    opacity: 0;
 }
 
 @keyframes loading {

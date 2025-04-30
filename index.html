@@ -6,7 +6,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-      <script type="module" crossorigin src="/mdr/assets/index-BQBuB2b4.js"></script>
+      <script type="module" crossorigin src="/mdr/assets/index-D5NEv9cY.js"></script>
       <link rel="stylesheet" crossorigin href="/mdr/assets/index-BIJbAOOD.css">
     </head>
 
@@ -52,10 +52,22 @@
         customElements.define('boxy-box', BoxElement);
     </script>
 
-
+    <object style="display: none;" id="svgObject" type="image/svg+xml" data="assets/img/lumon-logo.svg"></object>
 
     <body class="body" id="body">
-        <div class="app">
+        <div id="startup-overlay-container">
+            <div id="startup-animation-container">
+                <div id="startup-animation">
+                    
+                </div>
+                <div id="startup-animation-text"></div>
+                <!-- <img id="startup-animation-text" src="assets/img/lumon-logo-accented-new.png"> -->
+            </div>
+            <div id="startup-overlay"></div>
+            <span id="blinking-cursor" class="blinking-cursor">$</span>
+            <!-- <span class="blinking-cursor">$</span> -->
+        </div>
+        <div class="app" id="app">
             <div class="header-container">
                 <div class="header">
                     <div class="header-inner">

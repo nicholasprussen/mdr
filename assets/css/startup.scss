@@ -1,0 +1,109 @@
+#startup-overlay-container {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: var(--background);
+    top: 0;
+    left: 0;
+    z-index: 999;
+    color: var(--accent);
+    padding: 1em;
+    padding-top: 0.75em;
+    font-weight: bold;
+    font-family: open-sans;
+    font-size: 1em;
+}
+
+#startup-animation-container {
+    display: none;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: var(--background);
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    // display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    animation: startup-close 2000ms ease-in-out 5s forwards;
+}
+
+#startup-animation-text {
+    position: absolute;
+    width: 23%;
+    height: 8%;
+    background-color: var(--background);
+    //transform: translate(-50%, 50%);
+    opacity: 0;
+    animation: startup-text-opacity 3s ease-in-out forwards;
+}
+
+#startup-animation-text::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url('../img/lumon-logo-accented-new.png');
+    opacity: 0;
+    animation: startup-text-opacity 4s ease-in-out forwards;
+}
+
+@keyframes startup-text-opacity {
+    0% {
+        opacity: 0;
+    }
+    75% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes startup-close {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+#startup-animation {
+    // position: absolute;
+    // transform: translate(-50%, 50%);
+    // height: 10%;
+    width: 30%;
+    // background-color: var(--background);
+    // top: 0;
+    // left: 0;
+    // z-index: 1000;
+    // color: var(--accent);
+}
+
+.blinking-cursor {
+    position: relative;
+}
+
+.blinking-cursor::after {
+    content: '';
+    position: absolute;
+    right: -100%;
+    top: 15%;
+    width: 90%;
+    height: 70%;
+    background-color: var(--accent);
+    animation: blink 1s infinite;
+    z-index: 999;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
