@@ -11,7 +11,7 @@
     padding-top: 0.75em;
     font-weight: bold;
     font-family: open-sans;
-    font-size: 2em;
+    font-size: 1em;
 }
 
 #startup-animation-container {
@@ -26,6 +26,8 @@
     // display: flex;
     justify-content: center;
     align-items: center;
+    opacity: 1;
+    animation: startup-close 2000ms ease-in-out 5s forwards;
 }
 
 #startup-animation-text {
@@ -34,6 +36,8 @@
     height: 8%;
     background-color: var(--background);
     //transform: translate(-50%, 50%);
+    opacity: 0;
+    animation: startup-text-opacity 3s ease-in-out forwards;
 }
 
 #startup-animation-text::before {
@@ -45,6 +49,29 @@
     background-repeat: no-repeat;
     background-size: contain;
     background-image: url('../img/lumon-logo-accented-new.png');
+    opacity: 0;
+    animation: startup-text-opacity 4s ease-in-out forwards;
+}
+
+@keyframes startup-text-opacity {
+    0% {
+        opacity: 0;
+    }
+    75% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes startup-close {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 #startup-animation {
