@@ -1,17 +1,31 @@
 import { GlobalState } from "./global-state";
+import { SaveGame } from "./models/localstorage/save-game";
 import { Startup } from "./startup";
 import { StartupAnimation } from "./startup-animation";
 import { startupText } from "./startup-text";
 let state: GlobalState;
 
-function init() {
+async function init(): Promise<void> {
   generateHexCodes();
   state = new GlobalState();
-  startup();
+
+  let saveState = new SaveGame();
+
+  if (window.localStorage.)
+
+  //Initialize and run startup. 
+  //TODO, check for startup already happened. Skip if present
+  
+  await startup();
+
+
+  //Initialize and run the main application
+
   //state.animate(0);
 }
 
 async function startup(): Promise<void> {
+
   const startup = new Startup();
   await startup.start();
   const startupAnimation = new StartupAnimation();

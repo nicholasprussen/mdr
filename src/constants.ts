@@ -69,3 +69,7 @@ export const CaseFiles: string[] = [
 
 // export const FRAMES_TO_FULL_SPEED = 200;
 // export const MAX_WARM_UP_PERIOD = 1000;
+
+export enum LocalStorageKeys {
+    SAVE_GAME = "SaveGame"
+};
